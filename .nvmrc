@@ -1,0 +1,22 @@
+22
+# env secrets
+.env
+.env.*
+# dependencies
+node_modules
+
+# builds
+dist
+build
+
+# env secrets
+.env
+.env.*
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
