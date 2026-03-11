@@ -1,6 +1,6 @@
 // client/src/pages/Home.tsx
 import type { FormEvent, ReactNode } from "react";
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   ChevronLeft,
@@ -25,7 +25,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
 import InstagramWidget from "@/components/InstagramWidget";
 import GoogleReviewsWidget from "@/components/GoogleReviewsWidget";
 
@@ -59,27 +58,50 @@ const INSTAGRAM_URL = "https://www.instagram.com/dedikkezeehond/";
 const GUESTPLAN_ACCESS_KEY = "e0bd256fce2d473ce637333d6d8580e31c2a8692";
 const GUESTPLAN_SRC = "https://cdn.guestplan.com/widget.js";
 
+// Consent
+const CONSENT_KEY = "dikkezeehond_consent_v1";
+
 type IdleCallbackHandle = number;
 type IdleDeadline = { didTimeout: boolean; timeRemaining: () => number };
 type RequestIdleCallbackOptions = { timeout?: number };
 
+type ConsentState = {
+  necessary: true;
+  externalContent: boolean;
+};
+
+function getStoredConsent(): ConsentState | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(CONSENT_KEY);
+    return raw ? (JSON.parse(raw) as ConsentState) : null;
+  } catch {
+    return null;
+  }
+}
+
+function setStoredConsent(value: ConsentState) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(CONSENT_KEY, JSON.stringify(value));
+}
+
 function GoodToKnowCard() {
   return (
     <div className="rounded-2xl border border-border bg-background p-6">
-      <h3 className="font-heading text-xl font-bold text-primary mb-2">
+      <h3 className="mb-2 font-heading text-xl font-bold text-primary">
         Goed om te weten
       </h3>
       <ul className="space-y-2 text-sm text-muted-foreground">
         <li className="flex items-start gap-3">
-          <div className="h-2 w-2 rounded-full bg-accent mt-2 shrink-0" />
+          <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
           Prijzen en aanbod kunnen per seizoen verschillen.
         </li>
         <li className="flex items-start gap-3">
-          <div className="h-2 w-2 rounded-full bg-accent mt-2 shrink-0" />
+          <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
           Allergieën of dieetwensen? Vraag het ons team.
         </li>
         <li className="flex items-start gap-3">
-          <div className="h-2 w-2 rounded-full bg-accent mt-2 shrink-0" />
+          <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
           Groepen &amp; events: we maken graag een aanbod op maat.
         </li>
       </ul>
@@ -90,6 +112,41 @@ function GoodToKnowCard() {
 export default function Home() {
   const { toast } = useToast();
   const reduceMotion = useReducedMotion();
+
+  // Consent state
+  const [consentLoaded, setConsentLoaded] = useState(false);
+  const [hasExternalConsent, setHasExternalConsent] = useState(false);
+  const [showConsentModal, setShowConsentModal] = useState(false);
+
+  useEffect(() => {
+    const stored = getStoredConsent();
+
+    if (!stored) {
+      setShowConsentModal(true);
+      setHasExternalConsent(false);
+    } else {
+      setHasExternalConsent(stored.externalContent);
+      setShowConsentModal(false);
+    }
+
+    setConsentLoaded(true);
+  }, []);
+
+  function acceptAllConsent() {
+    setStoredConsent({ necessary: true, externalContent: true });
+    setHasExternalConsent(true);
+    setShowConsentModal(false);
+  }
+
+  function acceptNecessaryOnly() {
+    setStoredConsent({ necessary: true, externalContent: false });
+    setHasExternalConsent(false);
+    setShowConsentModal(false);
+  }
+
+  function openPrivacySettings() {
+    setShowConsentModal(true);
+  }
 
   // Hero parallax
   const { scrollY } = useScroll();
@@ -137,7 +194,6 @@ export default function Home() {
     [reduceMotion ? 0 : -14, reduceMotion ? 0 : 14],
   );
 
-  // Lightbox photos (als je ze later weer wilt tonen)
   const photos = useMemo(
     () => [
       { src: "/photos/exterior.jpg", alt: "Dikke Zeehond aan het strand" },
@@ -177,7 +233,7 @@ export default function Home() {
     email: "",
     phone: "",
     message: "",
-    website: "", // honeypot
+    website: "",
   });
 
   async function submitContact(e: FormEvent) {
@@ -219,8 +275,10 @@ export default function Home() {
     }
   }
 
-  // Guestplan: script load (idle) + access key
+  // Guestplan alleen na consent
   useEffect(() => {
+    if (!consentLoaded || !hasExternalConsent) return;
+
     const load = () => {
       if (document.querySelector(`script[src="${GUESTPLAN_SRC}"]`)) return;
 
@@ -254,15 +312,14 @@ export default function Home() {
       if (idleId !== null && w.cancelIdleCallback) w.cancelIdleCallback(idleId);
       if (timeoutId !== null) window.clearTimeout(timeoutId);
     };
-  }, []);
+  }, [consentLoaded, hasExternalConsent]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground selection:bg-accent selection:text-white">
       <Navigation />
 
       <main className="flex-1">
-        {/* HERO */}
-        <section className="relative h-screen min-h-[680px] flex items-center justify-center overflow-hidden">
+        <section className="relative flex h-screen min-h-[680px] items-center justify-center overflow-hidden">
           <motion.div
             className="absolute inset-0 z-0 will-change-transform"
             style={{ y: heroBgY, scale: heroBgScale }}
@@ -283,29 +340,28 @@ export default function Home() {
               transition={{ duration: 0.85, delay: 0.15 }}
               className="max-w-3xl"
             >
-              <p className="text-white/90 font-medium tracking-[0.35em] uppercase mb-4 text-xs md:text-sm">
+              <p className="mb-4 text-xs font-medium uppercase tracking-[0.35em] text-white/90 md:text-sm">
                 Strandpaviljoen • De Koog • Texel
               </p>
 
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold text-white mb-6 leading-[1.03]">
+              <h1 className="mb-6 font-heading text-5xl font-bold leading-[1.03] text-white md:text-7xl lg:text-8xl">
                 Beach More
                 <br />
                 Worry Less
                 <br />
               </h1>
 
-              <p className="text-lg md:text-xl text-white/90 max-w-xl mb-10 leading-relaxed font-light">
+              <p className="mb-10 max-w-xl text-lg font-light leading-relaxed text-white/90 md:text-xl">
                 Van je eerste koffie tot de laatste proost bij zonsondergang —
                 zand tussen je tenen en het geluid van de zee op de achtergrond.
               </p>
 
-              {/* Buttons: GEEN losse reserveer-knoppen, alleen navigatie */}
-              <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+              <div className="flex flex-col justify-center gap-3 sm:flex-row md:justify-start">
                 <Button
                   asChild
                   size="lg"
                   variant="outline"
-                  className="text-white border-white/80 hover:bg-white/15 text-base px-8 h-12 rounded-full font-medium backdrop-blur-sm"
+                  className="h-12 rounded-full border-white/80 px-8 text-base font-medium text-white backdrop-blur-sm hover:bg-white/15"
                 >
                   <a href="#menu">Bekijk menukaart</a>
                 </Button>
@@ -313,7 +369,7 @@ export default function Home() {
                 <Button
                   asChild
                   size="lg"
-                  className="bg-white text-primary hover:bg-white/90 text-base px-8 h-12 rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
+                  className="h-12 rounded-full bg-white px-8 text-base font-medium text-primary shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
                 >
                   <a href="#contact">Reserveren</a>
                 </Button>
@@ -321,55 +377,52 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Scroll indicator */}
           <motion.div
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={reduceMotion ? undefined : { opacity: 1 }}
             transition={{ delay: 1.35, duration: 1 }}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-white/70 flex flex-col items-center gap-2"
+            className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2 text-white/70"
           >
             <span className="text-[11px] uppercase tracking-[0.35em]">
               Scroll
             </span>
-            <div className="w-px h-12 bg-white/30 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1/2 bg-white animate-slide-down" />
+            <div className="relative h-12 w-px overflow-hidden bg-white/30">
+              <div className="animate-slide-down absolute left-0 top-0 h-1/2 w-full bg-white" />
             </div>
           </motion.div>
         </section>
 
-        {/* MENU */}
-        <section id="menu" className="py-10 md:py-20 bg-secondary/20">
-          <div className="container px-6 mx-auto">
-            <div className="flex flex-col lg:flex-row items-start gap-10 md:gap-12">
-              <div className="lg:w-5/12 space-y-6 md:space-y-8">
-                <span className="text-accent font-bold tracking-[0.35em] uppercase text-xs">
+        <section id="menu" className="bg-secondary/20 py-10 md:py-20">
+          <div className="container mx-auto px-6">
+            <div className="flex flex-col items-start gap-10 lg:flex-row md:gap-12">
+              <div className="space-y-6 lg:w-5/12 md:space-y-8">
+                <span className="text-xs font-bold uppercase tracking-[0.35em] text-accent">
                   Eten &amp; drinken
                 </span>
-                <h2 className="text-4xl md:text-6xl font-heading text-primary">
+                <h2 className="font-heading text-4xl text-primary md:text-6xl">
                   Menukaart
                 </h2>
 
-                {/* Desktop-only */}
                 <div className="hidden lg:block">
                   <GoodToKnowCard />
                 </div>
               </div>
 
-              <div className="lg:w-7/12 w-full">
-                <div className="relative w-full h-[66vh] md:h-[80vh] overflow-hidden rounded-3xl border border-border bg-white shadow-sm">
+              <div className="w-full lg:w-7/12">
+                <div className="relative h-[66vh] w-full overflow-hidden rounded-3xl border border-border bg-white shadow-sm md:h-[80vh]">
                   <img
                     src="/menu/Zomer_menu_cover.png"
                     alt="Menukaart cover"
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="absolute inset-0 h-full w-full object-cover"
                     loading="lazy"
                     decoding="async"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/25" />
 
-                  <div className="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row gap-3">
+                  <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-3 sm:flex-row">
                     <Button
                       asChild
-                      className="rounded-full h-12 px-10 bg-accent text-white hover:bg-accent/90"
+                      className="h-12 rounded-full bg-accent px-10 text-white hover:bg-accent/90"
                     >
                       <a
                         href="/menu/Menukaart_Zomer_2026.pdf"
@@ -383,12 +436,11 @@ export default function Home() {
                     <Button
                       asChild
                       variant="outline"
-                      className="rounded-full h-12 px-8 bg-white/90"
+                      className="h-12 rounded-full bg-white/90 px-8"
                     ></Button>
                   </div>
                 </div>
 
-                {/* Mobile-only */}
                 <div className="mt-5 lg:hidden">
                   <GoodToKnowCard />
                 </div>
@@ -401,18 +453,17 @@ export default function Home() {
           </div>
         </section>
 
-        {/* WEBCAM */}
-        <section id="webcam" className="py-10 md:py-24 bg-background">
-          <div className="container px-6 mx-auto">
-            <div className="max-w-5xl mx-auto">
-              <div className="text-center space-y-3 md:space-y-4 mb-7 md:mb-12">
-                <span className="text-accent font-bold tracking-[0.35em] uppercase text-xs">
+        <section id="webcam" className="bg-background py-10 md:py-24">
+          <div className="container mx-auto px-6">
+            <div className="mx-auto max-w-5xl">
+              <div className="mb-7 space-y-3 text-center md:mb-12 md:space-y-4">
+                <span className="text-xs font-bold uppercase tracking-[0.35em] text-accent">
                   Live
                 </span>
-                <h2 className="text-4xl md:text-6xl font-heading text-primary">
+                <h2 className="font-heading text-4xl text-primary md:text-6xl">
                   Strandwebcam
                 </h2>
-                <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+                <p className="mx-auto max-w-2xl text-lg leading-relaxed text-muted-foreground">
                   Check de golven, het weer en de sfeer live.
                 </p>
               </div>
@@ -433,18 +484,20 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="werkenbij" className="py-10 md:py-16 bg-background">
-          <div className="container px-6 mx-auto">
-            <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-              {/* Tekst */}
+        <section
+          id="werkenbij"
+          className="scroll-mt-28 bg-background py-10 md:py-16"
+        >
+          <div className="container mx-auto px-6">
+            <div className="mx-auto grid max-w-6xl grid-cols-1 items-start gap-10 lg:grid-cols-2">
               <div>
-                <span className="text-accent font-bold tracking-[0.35em] uppercase text-xs">
+                <span className="text-xs font-bold uppercase tracking-[0.35em] text-accent">
                   Werken bij
                 </span>
-                <h2 className="mt-3 text-4xl md:text-6xl font-heading text-primary">
+                <h2 className="mt-3 font-heading text-4xl text-primary md:text-6xl">
                   Kom werken bij Dikke Zeehond
                 </h2>
-                <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
+                <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
                   Zoek je een leuke (bij)baan op Texel? We zoeken energieke
                   mensen voor bediening, keuken en allround. Geen gedoe — gewoon
                   een goed team, een mooie plek en lekker knallen met elkaar.
@@ -485,14 +538,11 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-
-                <div className="mt-6 flex flex-wrap gap-3"></div>
               </div>
 
-              {/* Formulier */}
               <div
                 id="solliciteren"
-                className="rounded-3xl border border-border bg-white/60 backdrop-blur p-6 md:p-8 shadow-sm"
+                className="rounded-3xl border border-border bg-white/60 p-6 shadow-sm backdrop-blur md:p-8"
               >
                 <h3 className="font-heading text-2xl text-primary">
                   Solliciteren
@@ -501,7 +551,6 @@ export default function Home() {
                   Laat je gegevens achter — we nemen snel contact met je op.
                 </p>
 
-                {/* Dit formulier kun je laten posten naar dezelfde /api/contact */}
                 <form
                   className="mt-6 space-y-4"
                   onSubmit={async (e) => {
@@ -510,13 +559,12 @@ export default function Home() {
                     const fd = new FormData(form);
 
                     const payload = {
-                      // dit veld kun je server-side gebruiken als onderwerp/tag
                       topic: "Werken bij",
                       name: String(fd.get("name") ?? ""),
                       email: String(fd.get("email") ?? ""),
                       phone: String(fd.get("phone") ?? ""),
                       message: String(fd.get("message") ?? ""),
-                      website: "", // honeypot consistent houden
+                      website: "",
                     };
 
                     const res = await fetch("/api/contact", {
@@ -535,7 +583,7 @@ export default function Home() {
                     }
                   }}
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
                       <label className="text-xs font-semibold text-slate-700">
                         Naam
@@ -607,18 +655,17 @@ export default function Home() {
           </div>
         </section>
 
-        {/* LOCATION (zonder reviews) */}
-        <section id="location" className="py-10 md:py-24 bg-background">
-          <div className="container px-6 mx-auto">
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center space-y-3 md:space-y-4 mb-7 md:mb-12">
-                <span className="text-accent font-bold tracking-[0.35em] uppercase text-xs">
+        <section id="location" className="bg-background py-10 md:py-24">
+          <div className="container mx-auto px-6">
+            <div className="mx-auto max-w-6xl">
+              <div className="mb-7 space-y-3 text-center md:mb-12 md:space-y-4">
+                <span className="text-xs font-bold uppercase tracking-[0.35em] text-accent">
                   Locatie
                 </span>
-                <h2 className="text-4xl md:text-6xl font-heading text-primary">
+                <h2 className="font-heading text-4xl text-primary md:text-6xl">
                   De Koog, Texel
                 </h2>
-                <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
+                <p className="mx-auto max-w-3xl text-lg leading-relaxed text-muted-foreground">
                   Je vindt Strandpaviljoen Dikke Zeehond direct aan het strand
                   bij De Koog.
                 </p>
@@ -626,30 +673,37 @@ export default function Home() {
 
               <div
                 ref={mapRef}
-                className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-stretch"
+                className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-5"
               >
                 <div className="lg:col-span-3">
                   <motion.div
                     style={reduceMotion ? undefined : { y: mapY }}
-                    className="rounded-3xl border border-border bg-white shadow-sm overflow-hidden"
+                    className="overflow-hidden rounded-3xl border border-border bg-white shadow-sm"
                   >
                     <div className="relative h-[380px] md:h-[520px]">
-                      <iframe
-                        title="Google Maps - Strandpaviljoen Dikke Zeehond Google review (De Koog, Texel)"
-                        src={MAPS_EMBED_SRC}
-                        className="h-full w-full"
-                        style={{ border: 0 }}
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                        allowFullScreen
-                      />
+                      {hasExternalConsent ? (
+                        <iframe
+                          title="Google Maps - Strandpaviljoen Dikke Zeehond"
+                          src={MAPS_EMBED_SRC}
+                          className="h-full w-full"
+                          style={{ border: 0 }}
+                          loading="lazy"
+                          referrerPolicy="no-referrer-when-downgrade"
+                          allowFullScreen
+                        />
+                      ) : (
+                        <ConsentPlaceholder
+                          title="Google Maps"
+                          onAllow={acceptAllConsent}
+                        />
+                      )}
                     </div>
                   </motion.div>
                 </div>
 
-                <div className="lg:col-span-2 flex flex-col gap-6">
+                <div className="flex flex-col gap-6 lg:col-span-2">
                   <div className="rounded-3xl border border-border bg-white p-7 shadow-sm">
-                    <h3 className="font-heading text-2xl text-primary mb-4">
+                    <h3 className="mb-4 font-heading text-2xl text-primary">
                       Strandpaviljoen Dikke Zeehond
                     </h3>
 
@@ -671,10 +725,10 @@ export default function Home() {
                       </p>
                     </div>
 
-                    <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                    <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                       <Button
                         asChild
-                        className="rounded-full h-12 px-10 bg-accent text-white hover:bg-accent/90"
+                        className="h-12 rounded-full bg-accent px-10 text-white hover:bg-accent/90"
                       >
                         <a
                           href={MAPS_APP_LINK}
@@ -688,7 +742,7 @@ export default function Home() {
                       <Button
                         asChild
                         variant="outline"
-                        className="rounded-full h-12 px-10 bg-accent text-white hover:bg-accent/90"
+                        className="h-12 rounded-full bg-accent px-10 text-white hover:bg-accent/90"
                       >
                         <a
                           href={MAPS_DIRECTIONS_LINK}
@@ -725,12 +779,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* VIBE STRIP (solid kleur #c9c6b0 + reviews carousel) */}
         <section
           id="vibe"
-          className="relative py-14 md:py-36 bg-[#c9c6b0] text-slate-900 overflow-hidden"
+          className="relative overflow-hidden bg-[#c9c6b0] py-14 text-slate-900 md:py-36"
         >
-          <div ref={vibeRef} className="absolute inset-0 pointer-events-none" />
+          <div ref={vibeRef} className="pointer-events-none absolute inset-0" />
 
           <motion.div
             className="absolute inset-0 z-0 opacity-45 will-change-transform"
@@ -739,56 +792,68 @@ export default function Home() {
             <img
               src={vibeImageUrl}
               alt="Interieur"
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
               loading="lazy"
               decoding="async"
             />
           </motion.div>
 
-          {/* Solid overlay, geen gradient */}
-          <div className="absolute inset-0 bg-[#c9c6b0]/70 z-10" />
+          <div className="absolute inset-0 z-10 bg-[#c9c6b0]/70" />
 
-          <div className="container relative z-20 px-6 mx-auto text-center">
-            <span className="text-slate-700 font-bold tracking-[0.35em] uppercase text-xs mb-4 block">
+          <div className="container relative z-20 mx-auto px-6 text-center">
+            <span className="mb-4 block text-xs font-bold uppercase tracking-[0.35em] text-slate-700">
               De plek
             </span>
-            <h2 className="text-4xl md:text-6xl font-heading mb-8 text-slate-900">
+            <h2 className="mb-8 font-heading text-4xl text-slate-900 md:text-6xl">
               Stijlvol op het zand
             </h2>
-            <p className="text-xl md:text-2xl text-slate-700/90 max-w-3xl mx-auto font-light leading-relaxed">
+            <p className="mx-auto max-w-3xl text-xl font-light leading-relaxed text-slate-700/90 md:text-2xl">
               Binnen warm en comfortabel, buiten zonnig en relaxed. Kom voor het
               uitzicht, blijf voor de sfeer.
             </p>
 
-            {/* Google Reviews widget (Elfsight) */}
-            <div className="mt-10 mx-auto max-w-4xl">
-              <GoogleReviewsWidget />
+            <div className="mx-auto mt-10 max-w-4xl">
+              {hasExternalConsent ? (
+                <GoogleReviewsWidget />
+              ) : (
+                <ConsentPlaceholder
+                  title="Google Reviews"
+                  onAllow={acceptAllConsent}
+                />
+              )}
             </div>
           </div>
         </section>
 
-        <section id="instagram" className="py-10 md:py-14 bg-background">
-          <div className="container px-6 mx-auto">
-            <div className="text-center space-y-3 mb-7 md:mb-12">
-              <span className="text-accent font-bold tracking-[0.35em] uppercase text-xs">
+        <section id="instagram" className="bg-background py-10 md:py-14">
+          <div className="container mx-auto px-6">
+            <div className="mb-7 space-y-3 text-center md:mb-12">
+              <span className="text-xs font-bold uppercase tracking-[0.35em] text-accent">
                 Instagram
               </span>
-              <h2 className="text-4xl md:text-6xl font-heading text-primary">
+              <h2 className="font-heading text-4xl text-primary md:text-6xl">
                 Laatste posts
               </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
                 Live vanuit Instagram.
               </p>
             </div>
 
-            <InstagramWidget />
+            {hasExternalConsent ? (
+              <InstagramWidget />
+            ) : (
+              <ConsentPlaceholder
+                title="Instagram"
+                onAllow={acceptAllConsent}
+              />
+            )}
 
             <div className="mt-6 text-center">
               <a
                 href="https://www.instagram.com/dedikkezeehond/"
                 target="_blank"
                 rel="noreferrer"
-                className="text-sm text-muted-foreground hover:text-primary underline underline-offset-4"
+                className="text-sm text-muted-foreground underline underline-offset-4 hover:text-primary"
               >
                 Bekijk alles op Instagram
               </a>
@@ -796,14 +861,13 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CONTACT + GUESTPLAN */}
         <section
           id="contact"
-          className="relative py-10 md:py-32 overflow-hidden bg-background"
+          className="relative overflow-hidden bg-background py-10 md:py-32"
         >
           <div
             ref={contactRef}
-            className="absolute inset-0 pointer-events-none"
+            className="pointer-events-none absolute inset-0"
           />
 
           <motion.div
@@ -813,7 +877,7 @@ export default function Home() {
             <img
               src="/photos/interior-2.jpg"
               alt=""
-              className="w-full h-full object-cover opacity-25"
+              className="h-full w-full object-cover opacity-25"
               loading="lazy"
               decoding="async"
             />
@@ -824,28 +888,27 @@ export default function Home() {
             className="absolute inset-0 z-0"
             style={{ opacity: contactGlowOpacity }}
           >
-            <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-primary/15 blur-3xl" />
+            <div className="absolute -left-40 -top-40 h-96 w-96 rounded-full bg-primary/15 blur-3xl" />
             <div className="absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-accent/15 blur-3xl" />
           </motion.div>
 
-          <div className="container px-6 mx-auto relative z-10">
+          <div className="container relative z-10 mx-auto px-6">
             <div className="mx-auto max-w-4xl">
               <div className="mb-8 text-center">
-                <span className="text-accent font-bold tracking-[0.35em] uppercase text-xs">
+                <span className="text-xs font-bold uppercase tracking-[0.35em] text-accent">
                   Contact
                 </span>
-                <h2 className="mt-3 text-4xl md:text-6xl font-heading text-primary">
+                <h2 className="mt-3 font-heading text-4xl text-primary md:text-6xl">
                   Stuur ons een bericht
                 </h2>
-                <p className="mt-3 text-lg text-muted-foreground leading-relaxed">
+                <p className="mt-3 text-lg leading-relaxed text-muted-foreground">
                   Vraag, groep of iets te vieren? Laat een bericht achter — we
                   reageren zo snel mogelijk.
                 </p>
               </div>
 
-              <div className="rounded-3xl border border-border bg-background/80 backdrop-blur-xl p-6 md:p-10 shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
+              <div className="rounded-3xl border border-border bg-background/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-xl md:p-10">
                 <form onSubmit={submitContact} className="space-y-6">
-                  {/* Honeypot */}
                   <input
                     value={contactForm.website}
                     onChange={(e) =>
@@ -857,7 +920,7 @@ export default function Home() {
                     aria-hidden="true"
                   />
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="name">Naam</Label>
                       <Input
@@ -924,7 +987,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between pt-2">
+                  <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center sm:justify-between">
                     <p className="text-xs text-muted-foreground">
                       Door te verzenden ga je akkoord dat we je bericht
                       gebruiken om contact op te nemen.
@@ -932,14 +995,14 @@ export default function Home() {
 
                     <Button
                       type="submit"
-                      className="rounded-full h-12 px-10 bg-accent text-white hover:bg-accent/90"
+                      className="h-12 rounded-full bg-accent px-10 text-white hover:bg-accent/90"
                       disabled={contactLoading}
                     >
                       {contactLoading ? "Verzenden..." : "Verstuur bericht"}
                     </Button>
                   </div>
 
-                  <div className="pt-2 flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex flex-wrap items-center justify-center gap-4 pt-2 text-sm text-muted-foreground">
                     <span className="inline-flex items-center gap-2">
                       <Phone className="h-4 w-4 text-accent" />
                       <span className="font-medium text-primary">
@@ -968,12 +1031,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* LIGHTBOX */}
         <Dialog
           open={lightboxIndex !== null}
           onOpenChange={(open) => (!open ? closeLightbox() : undefined)}
         >
-          <DialogContent className="max-w-5xl p-0 overflow-hidden bg-black text-white border-none">
+          <DialogContent className="max-w-5xl overflow-hidden border-none bg-black p-0 text-white">
             <DialogTitle className="sr-only">Foto</DialogTitle>
 
             <div className="relative">
@@ -981,7 +1043,7 @@ export default function Home() {
                 <img
                   src={photos[lightboxIndex].src}
                   alt={photos[lightboxIndex].alt}
-                  className="w-full h-[70vh] md:h-[80vh] object-contain bg-black"
+                  className="h-[70vh] w-full bg-black object-contain md:h-[80vh]"
                   decoding="async"
                 />
               )}
@@ -990,7 +1052,7 @@ export default function Home() {
                 type="button"
                 onClick={closeLightbox}
                 aria-label="Sluit"
-                className="absolute top-3 right-3 rounded-full bg-white/10 hover:bg-white/20 p-2"
+                className="absolute right-3 top-3 rounded-full bg-white/10 p-2 hover:bg-white/20"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -999,7 +1061,7 @@ export default function Home() {
                 type="button"
                 onClick={prev}
                 aria-label="Vorige"
-                className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/10 hover:bg-white/20 p-2"
+                className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 hover:bg-white/20"
               >
                 <ChevronLeft className="h-6 w-6" />
               </button>
@@ -1008,12 +1070,12 @@ export default function Home() {
                 type="button"
                 onClick={next}
                 aria-label="Volgende"
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/10 hover:bg-white/20 p-2"
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 hover:bg-white/20"
               >
                 <ChevronRight className="h-6 w-6" />
               </button>
 
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
                 <p className="text-sm text-white/80">
                   {lightboxIndex !== null ? photos[lightboxIndex].alt : ""}
                 </p>
@@ -1023,14 +1085,11 @@ export default function Home() {
         </Dialog>
       </main>
 
-      {/* FOOTER (altijd onderaan) */}
       <footer className="mt-auto bg-[#c9c6b0] text-slate-900">
-        {/* subtiele lijn */}
         <div className="h-px w-full bg-black/10" />
 
         <div className="mx-auto max-w-6xl px-6 py-14">
           <div className="grid gap-10 md:grid-cols-4">
-            {/* Brand */}
             <div className="md:col-span-2">
               <div className="flex items-center gap-4">
                 <img
@@ -1105,7 +1164,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Links */}
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-800">
                 Navigatie
@@ -1122,22 +1180,34 @@ export default function Home() {
                   </a>
                 </li>
                 <li>
+                  <a href="#werkenbij" className="hover:text-slate-900">
+                    Werken
+                  </a>
+                </li>
+                <li>
                   <a href="#contact" className="hover:text-slate-900">
                     Reserveren &amp; contact
                   </a>
                 </li>
-                <li></li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={openPrivacySettings}
+                    className="hover:text-slate-900"
+                  >
+                    Privacy-instellingen
+                  </button>
+                </li>
               </ul>
             </div>
 
-            {/* Locatie */}
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-800">
                 Locatie
               </p>
               <div className="mt-4 space-y-3 text-sm text-slate-700">
                 <p>
-                  <span className="text-slate-900 font-semibold">
+                  <span className="font-semibold text-slate-900">
                     Badweg 202
                   </span>
                   <br />
@@ -1174,13 +1244,127 @@ export default function Home() {
               </span>
             </span>
 
-            <span className="text-slate-500 md:text-right">
-              Ontworpen met liefde voor zee &amp; strand
-            </span>
+            <button
+              type="button"
+              onClick={openPrivacySettings}
+              className="text-right text-slate-500 underline underline-offset-4 hover:text-slate-700"
+            >
+              Privacy-instellingen
+            </button>
           </div>
         </div>
       </footer>
+
+      <CookieConsentModal
+        open={showConsentModal}
+        onAcceptAll={acceptAllConsent}
+        onNecessaryOnly={acceptNecessaryOnly}
+      />
     </div>
+  );
+}
+
+function ConsentPlaceholder({
+  title,
+  onAllow,
+}: {
+  title: string;
+  onAllow: () => void;
+}) {
+  return (
+    <div className="flex h-full min-h-[260px] items-center justify-center rounded-3xl border border-border bg-white/70 p-8 text-center">
+      <div className="max-w-md space-y-4">
+        <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent">
+          Externe content
+        </p>
+        <h3 className="font-heading text-2xl text-primary">{title}</h3>
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          Deze content wordt pas geladen nadat je externe content hebt
+          toegestaan.
+        </p>
+        <button
+          type="button"
+          onClick={onAllow}
+          className="inline-flex h-11 items-center justify-center rounded-full bg-accent px-6 text-sm font-semibold text-white hover:bg-accent/90"
+        >
+          Toestaan
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function CookieConsentModal({
+  open,
+  onAcceptAll,
+  onNecessaryOnly,
+}: {
+  open: boolean;
+  onAcceptAll: () => void;
+  onNecessaryOnly: () => void;
+}) {
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            className="fixed inset-0 z-[100] bg-black/45 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          />
+
+          <motion.div
+            className="fixed inset-x-4 bottom-4 z-[101] mx-auto max-w-2xl rounded-3xl border border-border bg-background p-6 shadow-2xl md:bottom-8 md:p-8"
+            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 16, scale: 0.98 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="space-y-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent">
+                  Privacy
+                </p>
+                <h3 className="mt-2 font-heading text-2xl text-primary">
+                  Jouw voorkeuren
+                </h3>
+              </div>
+
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                We gebruiken alleen noodzakelijke technieken om de site goed te
+                laten werken. Externe content zoals Instagram, Google Reviews,
+                Google Maps en reserveringswidgets kan gegevens laden van derde
+                partijen.
+              </p>
+
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                Kies of je alleen noodzakelijke onderdelen wilt gebruiken, of
+                ook externe content wilt toestaan.
+              </p>
+
+              <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={onAcceptAll}
+                  className="inline-flex h-12 items-center justify-center rounded-full bg-accent px-8 text-sm font-semibold text-white hover:bg-accent/90"
+                >
+                  Akkoord
+                </button>
+
+                <button
+                  type="button"
+                  onClick={onNecessaryOnly}
+                  className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-background px-8 text-sm font-semibold text-primary hover:bg-secondary/40"
+                >
+                  Alleen noodzakelijk
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -1279,7 +1463,7 @@ function HeroMedia({
                       setPhase("slideshow");
                     }
                   }}
-                  className="rounded-full px-8 h-12 bg-white/15 text-white backdrop-blur-md border border-white/20 shadow-lg hover:bg-white/20 transition"
+                  className="h-12 rounded-full border border-white/20 bg-white/15 px-8 text-white shadow-lg backdrop-blur-md transition hover:bg-white/20"
                 >
                   Klik om video te starten
                 </button>
@@ -1289,7 +1473,7 @@ function HeroMedia({
             <button
               type="button"
               onClick={() => setPhase("slideshow")}
-              className="absolute bottom-6 right-6 rounded-full px-6 h-10 text-xs tracking-[0.25em] uppercase bg-black/25 text-white/80 border border-white/15 backdrop-blur hover:text-white hover:bg-black/35 transition"
+              className="absolute bottom-6 right-6 h-10 rounded-full border border-white/15 bg-black/25 px-6 text-xs uppercase tracking-[0.25em] text-white/80 backdrop-blur transition hover:bg-black/35 hover:text-white"
             >
               Skip
             </button>
@@ -1326,7 +1510,6 @@ function HeroMedia({
   );
 }
 
-/** LazyMount */
 function LazyMount({
   children,
   rootMargin = "600px 0px",
