@@ -25,7 +25,7 @@ export default function Navigation() {
       { name: "Menukaart", href: "#menu" },
       { name: "Locatie", href: "#location" },
       { name: "Webcam", href: "#webcam" },
-      { name: "Werken", href: "#werken" },
+      { name: "Werken", href: "#werkenbij" },
       { name: "Contact", href: "#contact" },
     ],
     [],
