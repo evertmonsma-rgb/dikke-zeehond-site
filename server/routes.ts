@@ -23,7 +23,7 @@ console.log("ENV CHECK", {
 });
 export async function registerRoutes(
   httpServer: Server,
-  app: Express
+  app: Express,
 ): Promise<Server> {
   // ----------------------------
   // Healthcheck
