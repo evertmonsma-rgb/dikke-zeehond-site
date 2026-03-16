@@ -471,7 +471,7 @@ export default function Home() {
               <div className="relative aspect-video overflow-hidden rounded-3xl border border-border bg-black shadow-sm">
                 <iframe
                   className="absolute inset-0 h-full w-full"
-                  src="https://www.youtube-nocookie.com/embed/kqlZ81HU2RU?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1"
+                  src="https://www.youtube-nocookie.com/embed/Bp01So_C8TE?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1"
                   title="Strandwebcam Dikke Zeehond"
                   loading="lazy"
                   allow="autoplay; encrypted-media; picture-in-picture; web-share"
