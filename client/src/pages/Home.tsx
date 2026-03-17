@@ -25,11 +25,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import InstagramWidget from "@/components/InstagramWidget";
 import GoogleReviewsWidget from "@/components/GoogleReviewsWidget";
+import InstagramWidget from "@/components/InstagramWidget";
 
 /** HERO: video first, then slideshow */
-const HERO_VIDEO_SRC = "/videos/DikkeZeehond-2025.mp4";
+const HERO_VIDEO_SRC = "/videos/DikkeZeehond-2026.mp4";
 const HERO_SLIDES = [
   { src: "/photos/exterior.jpg", alt: "Dikke Zeehond aan het strand" },
   { src: "/photos/interior-3.jpg", alt: "Bar & gezellige sfeer" },
@@ -194,6 +194,7 @@ export default function Home() {
     [reduceMotion ? 0 : -14, reduceMotion ? 0 : 14],
   );
 
+  // Lightbox photos
   const photos = useMemo(
     () => [
       { src: "/photos/exterior.jpg", alt: "Dikke Zeehond aan het strand" },
@@ -249,8 +250,9 @@ export default function Home() {
       });
 
       const data = await res.json().catch(() => ({}));
-      if (!res.ok)
+      if (!res.ok) {
         throw new Error((data as any)?.message || "Verzenden mislukt");
+      }
 
       toast({
         title: "Verzonden!",
@@ -319,6 +321,7 @@ export default function Home() {
       <Navigation />
 
       <main className="flex-1">
+        {/* HERO */}
         <section className="relative flex h-screen min-h-[680px] items-center justify-center overflow-hidden">
           <motion.div
             className="absolute inset-0 z-0 will-change-transform"
@@ -361,7 +364,7 @@ export default function Home() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="h-12 rounded-full border-white/80 px-8 text-base font-medium text-white backdrop-blur-sm hover:bg-white/15"
+                  className="h-12 rounded-full border-white/80 px-8 text-base font-medium text-white backdrop-blur-sm transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-white/15 hover:shadow-[0_8px_30px_rgba(255,255,255,0.12)] active:scale-[0.99]"
                 >
                   <a href="#menu">Bekijk menukaart</a>
                 </Button>
@@ -369,7 +372,7 @@ export default function Home() {
                 <Button
                   asChild
                   size="lg"
-                  className="h-12 rounded-full bg-white px-8 text-base font-medium text-primary shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
+                  className="h-12 rounded-full bg-white px-8 text-base font-medium text-primary shadow-lg transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-white/90 hover:shadow-[0_16px_40px_rgba(255,255,255,0.18)] active:scale-[0.99]"
                 >
                   <a href="#contact">Reserveren</a>
                 </Button>
@@ -392,6 +395,7 @@ export default function Home() {
           </motion.div>
         </section>
 
+        {/* MENU */}
         <section id="menu" className="bg-secondary/20 py-10 md:py-20">
           <div className="container mx-auto px-6">
             <div className="flex flex-col items-start gap-10 lg:flex-row md:gap-12">
@@ -422,7 +426,7 @@ export default function Home() {
                   <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-3 sm:flex-row">
                     <Button
                       asChild
-                      className="h-12 rounded-full bg-accent px-10 text-white hover:bg-accent/90"
+                      className="h-12 rounded-full bg-accent px-10 text-white transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-accent/90 hover:shadow-[0_14px_34px_rgba(0,0,0,0.12)] active:scale-[0.99]"
                     >
                       <a
                         href="/menu/Menukaart_Zomer_2026.pdf"
@@ -453,6 +457,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* WEBCAM */}
         <section id="webcam" className="bg-background py-10 md:py-24">
           <div className="container mx-auto px-6">
             <div className="mx-auto max-w-5xl">
@@ -484,6 +489,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* WERKEN */}
         <section
           id="werkenbij"
           className="scroll-mt-28 bg-background py-10 md:py-16"
@@ -635,7 +641,7 @@ export default function Home() {
 
                   <button
                     type="submit"
-                    className="inline-flex h-12 w-full items-center justify-center rounded-full bg-accent px-7 text-sm font-semibold text-white shadow-sm transition hover:bg-accent"
+                    className="inline-flex h-12 w-full items-center justify-center rounded-full bg-accent px-7 text-sm font-semibold text-white shadow-sm transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-accent hover:shadow-[0_14px_34px_rgba(0,0,0,0.12)] active:scale-[0.99]"
                   >
                     Verstuur sollicitatie
                   </button>
@@ -655,6 +661,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* LOCATION */}
         <section id="location" className="bg-background py-10 md:py-24">
           <div className="container mx-auto px-6">
             <div className="mx-auto max-w-6xl">
@@ -728,7 +735,7 @@ export default function Home() {
                     <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                       <Button
                         asChild
-                        className="h-12 rounded-full bg-accent px-10 text-white hover:bg-accent/90"
+                        className="h-12 rounded-full bg-accent px-10 text-white transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-accent/90 hover:shadow-[0_14px_34px_rgba(0,0,0,0.12)] active:scale-[0.99]"
                       >
                         <a
                           href={MAPS_APP_LINK}
@@ -742,7 +749,7 @@ export default function Home() {
                       <Button
                         asChild
                         variant="outline"
-                        className="h-12 rounded-full bg-accent px-10 text-white hover:bg-accent/90"
+                        className="h-12 rounded-full bg-accent px-10 text-white transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-accent/90 hover:shadow-[0_14px_34px_rgba(0,0,0,0.12)] active:scale-[0.99]"
                       >
                         <a
                           href={MAPS_DIRECTIONS_LINK}
@@ -779,6 +786,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* VIBE */}
         <section
           id="vibe"
           className="relative overflow-hidden bg-[#c9c6b0] py-14 text-slate-900 md:py-36"
@@ -825,6 +833,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* INSTAGRAM */}
         <section id="instagram" className="bg-background py-10 md:py-14">
           <div className="container mx-auto px-6">
             <div className="mb-7 space-y-3 text-center md:mb-12">
@@ -850,7 +859,7 @@ export default function Home() {
 
             <div className="mt-6 text-center">
               <a
-                href="https://www.instagram.com/dedikkezeehond/"
+                href={INSTAGRAM_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="text-sm text-muted-foreground underline underline-offset-4 hover:text-primary"
@@ -861,6 +870,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* CONTACT */}
         <section
           id="contact"
           className="relative overflow-hidden bg-background py-10 md:py-32"
@@ -995,7 +1005,7 @@ export default function Home() {
 
                     <Button
                       type="submit"
-                      className="h-12 rounded-full bg-accent px-10 text-white hover:bg-accent/90"
+                      className="h-12 rounded-full bg-accent px-10 text-white transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-accent/90 hover:shadow-[0_14px_34px_rgba(0,0,0,0.12)] active:scale-[0.99]"
                       disabled={contactLoading}
                     >
                       {contactLoading ? "Verzenden..." : "Verstuur bericht"}
@@ -1031,6 +1041,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* LIGHTBOX */}
         <Dialog
           open={lightboxIndex !== null}
           onOpenChange={(open) => (!open ? closeLightbox() : undefined)}
@@ -1085,6 +1096,7 @@ export default function Home() {
         </Dialog>
       </main>
 
+      {/* FOOTER */}
       <footer className="mt-auto bg-[#c9c6b0] text-slate-900">
         <div className="h-px w-full bg-black/10" />
 
@@ -1125,7 +1137,7 @@ export default function Home() {
 
               <div className="mt-6 flex items-center gap-3">
                 <a
-                  href="https://www.instagram.com/dedikkezeehond/"
+                  href={INSTAGRAM_URL}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white/35 text-slate-900 hover:bg-white/55"

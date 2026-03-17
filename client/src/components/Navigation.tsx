@@ -47,7 +47,7 @@ export default function Navigation() {
 
   const linkClass = (active: boolean) =>
     cn(
-      "group text-sm font-medium tracking-wide transition-colors relative",
+      "group relative text-sm font-medium tracking-[0.04em] transition-all duration-300 ease-out hover:scale-[1.03]",
       active
         ? "text-slate-900/90 hover:text-slate-900"
         : "text-white/90 hover:text-white",
@@ -55,7 +55,7 @@ export default function Navigation() {
 
   const underlineClass = (active: boolean) =>
     cn(
-      "absolute -bottom-2 left-0 h-px w-0 group-hover:w-full transition-all",
+      "absolute -bottom-2 left-0 h-px w-0 transition-all duration-300 ease-out group-hover:w-full group-hover:opacity-100 opacity-70",
       active ? "bg-slate-900/60" : "bg-white/80",
     );
 
