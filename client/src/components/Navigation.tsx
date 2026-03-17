@@ -23,9 +23,9 @@ export default function Navigation() {
   const navLinks = useMemo(
     () => [
       { name: "Menukaart", href: "#menu" },
-      { name: "Locatie", href: "#location" },
       { name: "Webcam", href: "#webcam" },
-      { name: "Werken", href: "#werkenbij" },
+      { name: "Werken", href: "#werken" },
+      { name: "Locatie", href: "#location" },
       { name: "Contact", href: "#contact" },
     ],
     [],

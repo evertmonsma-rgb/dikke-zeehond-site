@@ -32,6 +32,7 @@ import InstagramWidget from "@/components/InstagramWidget";
 const HERO_VIDEO_SRC = "/videos/DikkeZeehond-2026.mp4";
 const HERO_SLIDES = [
   { src: "/photos/exterior.jpg", alt: "Dikke Zeehond aan het strand" },
+  { src: "/photos/Wine_beach.png", alt: "Wijn Strand" },
   { src: "/photos/interior-3.jpg", alt: "Bar & gezellige sfeer" },
   { src: "/photos/interior-4.jpg", alt: "Binnen met zeezicht" },
 ];
@@ -491,7 +492,7 @@ export default function Home() {
 
         {/* WERKEN */}
         <section
-          id="werkenbij"
+          id="werken"
           className="scroll-mt-28 bg-background py-10 md:py-16"
         >
           <div className="container mx-auto px-6">
