@@ -1379,7 +1379,7 @@ function ReservationNoticeModal({
                 Kom je met een groep groter dan 10 personen? Stuur dan graag
                 even een mailtje naar{" "}
                 <a
-                  href="mailto:info@dikkezeehond.nl"
+                  href="mailto:groepen@dikkezeehond.nl"
                   className="font-medium text-primary underline underline-offset-4"
                 >
                   info@dikkezeehond.nl
