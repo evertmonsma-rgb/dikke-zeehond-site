@@ -49,6 +49,10 @@ const MAPS_DIRECTIONS_LINK =
   encodeURIComponent(MAP_QUERY);
 const MAPS_APP_LINK = "https://maps.app.goo.gl/KPu68EBoRMhDpFGN8?g_st=ipc";
 
+const WEBCAM_YOUTUBE_URL = "https://www.youtube.com/watch?v=f_CtUNq1FR0";
+const WEBCAM_EMBED_SRC =
+  "https://www.youtube-nocookie.com/embed/f_CtUNq1FR0?playsinline=1&rel=0&modestbranding=1";
+
 // Bedrijfsgegevens
 const CONTACT_PHONE = "0222 441110";
 const CONTACT_ADDRESS_LINE1 = "Badweg 202";
@@ -475,17 +479,43 @@ export default function Home() {
               </div>
 
               <div className="relative aspect-video overflow-hidden rounded-3xl border border-border bg-black shadow-sm">
-                <iframe
-                  className="absolute inset-0 h-full w-full"
-                  src="https://www.youtube-nocookie.com/embed/f_CtUNq1FR0?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1"
-                  title="Strandwebcam Dikke Zeehond"
-                  loading="lazy"
-                  allow="autoplay; encrypted-media; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10" />
+                {hasExternalConsent ? (
+                  <>
+                    <iframe
+                      className="absolute inset-0 h-full w-full"
+                      src={WEBCAM_EMBED_SRC}
+                      title="Strandwebcam Dikke Zeehond"
+                      loading="lazy"
+                      allow="encrypted-media; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
+                    />
+
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10" />
+
+                    <div className="absolute bottom-4 right-4">
+                      <a
+                        href={WEBCAM_YOUTUBE_URL}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="pointer-events-auto inline-flex h-11 items-center justify-center rounded-full bg-white/90 px-5 text-sm font-semibold text-primary shadow-sm hover:bg-white"
+                      >
+                        Open webcam direct
+                      </a>
+                    </div>
+                  </>
+                ) : (
+                  <ConsentPlaceholder
+                    title="Strandwebcam"
+                    onAllow={acceptAllConsent}
+                  />
+                )}
               </div>
+
+              <p className="mt-4 text-center text-sm text-muted-foreground">
+                Werkt de live embed niet goed op jouw browser? Open de webcam
+                dan direct in een nieuw tabblad.
+              </p>
             </div>
           </div>
         </section>
