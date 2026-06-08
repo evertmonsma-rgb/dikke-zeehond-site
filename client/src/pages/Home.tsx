@@ -122,6 +122,7 @@ export default function Home() {
   const [consentLoaded, setConsentLoaded] = useState(false);
   const [hasExternalConsent, setHasExternalConsent] = useState(false);
   const [showConsentModal, setShowConsentModal] = useState(false);
+  const [showReservationNotice, setShowReservationNotice] = useState(true);
 
   useEffect(() => {
     const stored = getStoredConsent();
@@ -1298,12 +1299,89 @@ export default function Home() {
         </div>
       </footer>
 
+      <ReservationNoticeModal
+        open={showReservationNotice}
+        onClose={() => setShowReservationNotice(false)}
+      />
+
       <CookieConsentModal
         open={showConsentModal}
         onAcceptAll={acceptAllConsent}
         onNecessaryOnly={acceptNecessaryOnly}
       />
     </div>
+  );
+}
+
+function ReservationNoticeModal({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            className="fixed inset-0 z-[110] bg-black/45 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          />
+
+          <motion.div
+            className="fixed inset-x-4 top-1/2 z-[111] mx-auto max-w-lg -translate-y-1/2 rounded-3xl border border-border bg-background p-6 shadow-2xl md:p-8"
+            initial={{ opacity: 0, y: 20, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 16, scale: 0.98 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="space-y-4 text-center">
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent">
+                Belangrijk bericht
+              </p>
+
+              <h3 className="font-heading text-3xl text-primary">
+                Even goed om te weten
+              </h3>
+
+              <p className="text-base leading-relaxed text-muted-foreground">
+                De komende 3 maanden nemen wij tijdelijk geen reserveringen aan.
+                Zo houden we meer ruimte en flexibiliteit om iedereen op een
+                fijne manier te ontvangen.
+                <br />
+                <br />
+                Je bent in deze periode nog steeds van harte welkom om gewoon
+                lekker langs te komen.
+                <br />
+                <br />
+                Kom je met een groep groter dan 10 personen? Stuur dan graag
+                even een mailtje naar{" "}
+                <a
+                  href="mailto:info@dikkezeehond.nl"
+                  className="font-medium text-primary underline underline-offset-4"
+                >
+                  info@dikkezeehond.nl
+                </a>
+                .
+              </p>
+
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="inline-flex h-12 items-center justify-center rounded-full bg-accent px-8 text-sm font-semibold text-white hover:bg-accent/90"
+                >
+                  Begrepen
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }
 
