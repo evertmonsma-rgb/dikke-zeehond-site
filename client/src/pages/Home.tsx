@@ -387,14 +387,6 @@ export default function Home() {
                 >
                   <a href="#menu">Bekijk menukaart</a>
                 </Button>
-
-                <Button
-                  asChild
-                  size="lg"
-                  className="h-12 rounded-full bg-white px-8 text-base font-medium text-primary shadow-lg transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-white/90 hover:shadow-[0_16px_40px_rgba(255,255,255,0.18)] active:scale-[0.99]"
-                >
-                  <a href="#contact">Reserveren</a>
-                </Button>
               </div>
             </motion.div>
           </div>
