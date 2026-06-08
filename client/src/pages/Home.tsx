@@ -1367,9 +1367,9 @@ function ReservationNoticeModal({
               </h3>
 
               <p className="text-base leading-relaxed text-muted-foreground">
-                De komende 3 maanden nemen wij tijdelijk geen reserveringen aan.
-                Zo houden we meer ruimte en flexibiliteit om iedereen op een
-                fijne manier te ontvangen.
+                De maanden Juni, Juli & Augustus nemen wij tijdelijk geen
+                reserveringen aan. Zo houden we meer ruimte en flexibiliteit om
+                iedereen op een fijne manier te ontvangen.
                 <br />
                 <br />
                 Je bent in deze periode nog steeds van harte welkom om gewoon
