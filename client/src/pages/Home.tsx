@@ -53,6 +53,8 @@ const WEBCAM_YOUTUBE_URL = "https://www.youtube.com/watch?v=f_CtUNq1FR0";
 const WEBCAM_EMBED_SRC =
   "https://www.youtube-nocookie.com/embed/f_CtUNq1FR0?playsinline=1&rel=0&modestbranding=1";
 
+const CONSTELL_SRC = "https://widget.constell.com/assets/index.js";
+
 // Bedrijfsgegevens
 const CONTACT_PHONE = "0222 441110";
 const CONTACT_ADDRESS_LINE1 = "Badweg 202";
@@ -322,6 +324,17 @@ export default function Home() {
     };
   }, [consentLoaded, hasExternalConsent]);
 
+  useEffect(() => {
+    if (!consentLoaded || !hasExternalConsent) return;
+    if (document.querySelector(`script[src="${CONSTELL_SRC}"]`)) return;
+
+    const s = document.createElement("script");
+    s.type = "module";
+    s.src = CONSTELL_SRC;
+    s.async = true;
+    document.body.appendChild(s);
+  }, [consentLoaded, hasExternalConsent]);
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground selection:bg-accent selection:text-white">
       <Navigation />
@@ -435,7 +448,7 @@ export default function Home() {
                       className="h-12 rounded-full bg-accent px-10 text-white transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-accent/90 hover:shadow-[0_14px_34px_rgba(0,0,0,0.12)] active:scale-[0.99]"
                     >
                       <a
-                        href="/menu/Menukaart_zomer.pdf"
+                        href="/menu/Menukaart_Zomer_2026.pdf"
                         target="_blank"
                         rel="noreferrer"
                       >
@@ -1304,6 +1317,20 @@ export default function Home() {
         onClose={() => setShowReservationNotice(false)}
       />
 
+      {hasExternalConsent ? (
+        <>
+          {/* @ts-expect-error custom element */}
+          <constell-widget
+            venue="019be325-7592-73f1-8ce0-1224521ec0bb"
+            offset-y="70"
+            brand-color="#edaf6d"
+            min-guest-amount="25"
+            max-guest-amount="100"
+            min-budget-amount="5000"
+          />
+        </>
+      ) : null}
+
       <CookieConsentModal
         open={showConsentModal}
         onAcceptAll={acceptAllConsent}
@@ -1348,9 +1375,9 @@ function ReservationNoticeModal({
               </h3>
 
               <p className="text-base leading-relaxed text-muted-foreground">
-                De maanden Juni, Juli & Augustus nemen wij tijdelijk geen
-                reserveringen aan. Zo houden we meer ruimte en flexibiliteit om
-                iedereen op een fijne manier te ontvangen.
+                De komende 3 maanden nemen wij tijdelijk geen reserveringen aan.
+                Zo houden we meer ruimte en flexibiliteit om iedereen op een
+                fijne manier te ontvangen.
                 <br />
                 <br />
                 Je bent in deze periode nog steeds van harte welkom om gewoon
