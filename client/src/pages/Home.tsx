@@ -32,7 +32,8 @@ import InstagramWidget from "@/components/InstagramWidget";
 const HERO_VIDEO_SRC = "/videos/DikkeZeehond-2026.mp4";
 const HERO_SLIDES = [
   { src: "/photos/exterior.jpg", alt: "Dikke Zeehond aan het strand" },
-  { src: "/photos/Wine_beach.png", alt: "Wijn Strand" },
+  { src: "/photos/Wine_Beach.png", alt: "Wijn Strand" },
+  { src: "/photos/exterior3.JPG", alt: "Buiten" },
   { src: "/photos/interior-3.jpg", alt: "Bar & gezellige sfeer" },
   { src: "/photos/interior-4.jpg", alt: "Binnen met zeezicht" },
 ];
@@ -1379,10 +1380,10 @@ function ReservationNoticeModal({
                 Kom je met een groep groter dan 10 personen? Stuur dan graag
                 even een mailtje naar{" "}
                 <a
-                  href="mailto:groepen@dikkezeehond.nl"
+                  href="mailto:info@dikkezeehond.nl"
                   className="font-medium text-primary underline underline-offset-4"
                 >
-                  info@dikkezeehond.nl
+                  groepen@dikkezeehond.nl
                 </a>
                 .
               </p>
