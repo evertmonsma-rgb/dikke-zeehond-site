@@ -38,6 +38,33 @@ const HERO_SLIDES = [
   { src: "/photos/interior-4.jpg", alt: "Binnen met zeezicht" },
 ];
 
+const GROUPS_SLIDES = [
+  {
+    src: "/photos/aan_zee.jpg",
+    alt: "Terras aan zee voor groepen en events",
+    eyebrow: "Aan zee",
+    title: "Van informeel tot feestelijk",
+  },
+  {
+    src: "/photos/proosten.jpg",
+    alt: "Sfeervol toostmoment aan zee",
+    eyebrow: "Sfeervol",
+    title: "Samen proosten met uitzicht",
+  },
+  {
+    src: "/photos/dineren.jpg",
+    alt: "Warm interieur voor diners en bijeenkomsten",
+    eyebrow: "Intiem",
+    title: "Diners in een warme setting",
+  },
+  {
+    src: "/photos/relaxt.jpg",
+    alt: "Relaxte sfeer voor een bijzondere dag op Texel",
+    eyebrow: "Bijzonder",
+    title: "Ook mooi voor bruiloften en vieringen",
+  },
+];
+
 const vibeImageUrl = "/photos/interior-3.jpg";
 
 const MAP_QUERY = "Strandpaviljoen Dikke Zeehond, De Koog, Texel";
@@ -448,12 +475,6 @@ export default function Home() {
                         Open menukaart (PDF) <ArrowRight className="h-4 w-4" />
                       </a>
                     </Button>
-
-                    <Button
-                      asChild
-                      variant="outline"
-                      className="h-12 rounded-full bg-white/90 px-8"
-                    ></Button>
                   </div>
                 </div>
 
@@ -908,6 +929,67 @@ export default function Home() {
           </div>
         </section>
 
+        {/* GROEPEN */}
+        <section id="groepen" className="bg-background py-10 md:py-24">
+          <div className="container mx-auto px-6">
+            <div className="mx-auto max-w-6xl">
+              <div className="mb-10 text-center md:mb-14">
+                <span className="text-xs font-bold uppercase tracking-[0.35em] text-accent">
+                  Groepen & events
+                </span>
+                <h2 className="mt-3 font-heading text-4xl text-primary md:text-6xl">
+                  Samen feestelijk aan zee
+                </h2>
+                <p className="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-muted-foreground">
+                  Van verjaardag en bedrijfsborrel tot familiediner of iets
+                  anders te vieren — voor groepen denken we graag met je mee.
+                  Informeel, sfeervol en direct aan het strand in De Koog.
+                </p>
+              </div>
+
+              <div className="mt-8 overflow-hidden rounded-3xl border border-border bg-white shadow-sm">
+                <GroupsSlideshow slides={GROUPS_SLIDES} />
+              </div>
+
+              <div className="mt-8 rounded-3xl border border-border bg-white/70 p-6 shadow-sm backdrop-blur md:p-8">
+                <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr] lg:items-center">
+                  <div className="text-center">
+                    <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent">
+                      Een indruk van de sfeer
+                    </p>
+                    <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
+                      Van intiem diner tot borrel, bruiloft of andere bijzondere
+                      gelegenheid — we zorgen graag voor een ontspannen setting
+                      aan zee.
+                    </p>
+                  </div>
+
+                  <div className="mx-auto w-full max-w-3xl">
+                    {hasExternalConsent ? (
+                      <div className="overflow-hidden rounded-[1.4rem]">
+                        {/* @ts-expect-error custom element */}
+                        <constell-widget
+                          venue="019be325-7592-73f1-8ce0-1224521ec0bb"
+                          offset-y="70"
+                          brand-color="#edaf6d"
+                          min-guest-amount="25"
+                          max-guest-amount="100"
+                          min-budget-amount="5000"
+                        />
+                      </div>
+                    ) : (
+                      <ConsentPlaceholder
+                        title="Groepen & events"
+                        onAllow={acceptAllConsent}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CONTACT */}
         <section
           id="contact"
@@ -1165,7 +1247,7 @@ export default function Home() {
                 </a>
 
                 <a
-                  href="mailto:info@dikkezeehond.nl"
+                  href="mailto:groepen@dikkezeehond.nl"
                   className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/35 px-4 py-2 text-slate-900 hover:bg-white/55"
                 >
                   <span className="text-slate-700">Mail</span>
@@ -1230,7 +1312,7 @@ export default function Home() {
                   </a>
                 </li>
                 <li>
-                  <a href="#werkenbij" className="hover:text-slate-900">
+                  <a href="#werken" className="hover:text-slate-900">
                     Werken
                   </a>
                 </li>
@@ -1310,25 +1392,83 @@ export default function Home() {
         onClose={() => setShowReservationNotice(false)}
       />
 
-      {hasExternalConsent ? (
-        <>
-          {/* @ts-expect-error custom element */}
-          <constell-widget
-            venue="019be325-7592-73f1-8ce0-1224521ec0bb"
-            offset-y="70"
-            brand-color="#edaf6d"
-            min-guest-amount="25"
-            max-guest-amount="100"
-            min-budget-amount="5000"
-          />
-        </>
-      ) : null}
-
       <CookieConsentModal
         open={showConsentModal}
         onAcceptAll={acceptAllConsent}
         onNecessaryOnly={acceptNecessaryOnly}
       />
+    </div>
+  );
+}
+
+function GroupsSlideshow({
+  slides,
+  intervalMs = 4200,
+}: {
+  slides: {
+    src: string;
+    alt: string;
+    eyebrow: string;
+    title: string;
+  }[];
+  intervalMs?: number;
+}) {
+  const reduceMotion = useReducedMotion();
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (slides.length <= 1 || reduceMotion) return;
+
+    const id = window.setInterval(() => {
+      setIndex((current) => (current + 1) % slides.length);
+    }, intervalMs);
+
+    return () => window.clearInterval(id);
+  }, [slides.length, intervalMs, reduceMotion]);
+
+  const current = slides[index];
+
+  return (
+    <div className="relative aspect-[16/9] w-full">
+      <AnimatePresence mode="wait">
+        <motion.img
+          key={current.src}
+          src={current.src}
+          alt={current.alt}
+          className="absolute inset-0 h-full w-full object-cover"
+          initial={reduceMotion ? false : { opacity: 0, scale: 1.02 }}
+          animate={reduceMotion ? undefined : { opacity: 1, scale: 1 }}
+          exit={reduceMotion ? undefined : { opacity: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.8, ease: "easeOut" }}
+        />
+      </AnimatePresence>
+
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/15" />
+
+      <div className="absolute bottom-0 left-0 right-0 p-5 md:p-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/80">
+          {current.eyebrow}
+        </p>
+        <p className="mt-2 max-w-xl font-heading text-2xl text-white md:text-4xl">
+          {current.title}
+        </p>
+      </div>
+
+      <div className="absolute bottom-5 right-5 flex gap-2">
+        {slides.map((slide, slideIndex) => (
+          <button
+            key={slide.src}
+            type="button"
+            onClick={() => setIndex(slideIndex)}
+            aria-label={`Ga naar slide ${slideIndex + 1}`}
+            className={`h-2.5 rounded-full transition-all ${
+              slideIndex === index
+                ? "w-8 bg-white"
+                : "w-2.5 bg-white/45 hover:bg-white/70"
+            }`}
+          />
+        ))}
+      </div>
     </div>
   );
 }
