@@ -953,7 +953,7 @@ export default function Home() {
 
               <div className="mt-8 rounded-3xl border border-border bg-white/70 p-6 shadow-sm backdrop-blur md:p-8">
                 <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr] lg:items-center">
-                  <div className="text-center">
+                  <div className="text-center pb-24 md:pb-0">
                     <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent">
                       Een indruk van de sfeer
                     </p>
@@ -966,7 +966,7 @@ export default function Home() {
 
                   <div className="mx-auto w-full max-w-3xl">
                     {hasExternalConsent ? (
-                      <div className="overflow-hidden rounded-[1.4rem]">
+                      <div className="overflow-hidden rounded-[1.4rem] min-h-[88px] md:min-h-0">
                         {/* @ts-expect-error custom element */}
                         <constell-widget
                           venue="019be325-7592-73f1-8ce0-1224521ec0bb"
