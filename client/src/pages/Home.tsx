@@ -468,7 +468,7 @@ export default function Home() {
                       className="h-12 rounded-full bg-accent px-10 text-white transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-accent/90 hover:shadow-[0_14px_34px_rgba(0,0,0,0.12)] active:scale-[0.99]"
                     >
                       <a
-                        href="/menu/Menukaart_Zomer_2026.pdf"
+                        href="/menu/Menukaart_zomer_2026.pdf"
                         target="_blank"
                         rel="noreferrer"
                       >
