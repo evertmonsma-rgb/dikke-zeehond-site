@@ -963,27 +963,6 @@ export default function Home() {
                       aan zee.
                     </p>
                   </div>
-
-                  <div className="mx-auto w-full max-w-3xl">
-                    {hasExternalConsent ? (
-                      <div className="overflow-hidden rounded-[1.4rem] min-h-[88px] md:min-h-0">
-                        {/* @ts-expect-error custom element */}
-                        <constell-widget
-                          venue="019be325-7592-73f1-8ce0-1224521ec0bb"
-                          offset-y="70"
-                          brand-color="#edaf6d"
-                          min-guest-amount="25"
-                          max-guest-amount="100"
-                          min-budget-amount="5000"
-                        />
-                      </div>
-                    ) : (
-                      <ConsentPlaceholder
-                        title="Groepen & events"
-                        onAllow={acceptAllConsent}
-                      />
-                    )}
-                  </div>
                 </div>
               </div>
             </div>
