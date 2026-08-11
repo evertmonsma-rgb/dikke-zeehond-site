@@ -953,10 +953,11 @@ export default function Home() {
 
               <div className="mt-8 rounded-3xl border border-border bg-white/70 p-6 shadow-sm backdrop-blur md:p-8">
                 <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr] lg:items-center">
-                  <div className="text-center pb-24 md:pb-0">
+                  <div className="mx-auto max-w-3xl text-center">
                     <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent">
                       Een indruk van de sfeer
                     </p>
+
                     <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
                       Van intiem diner tot borrel, bruiloft of andere bijzondere
                       gelegenheid — we zorgen graag voor een ontspannen setting
