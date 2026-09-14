@@ -129,7 +129,7 @@ function GoodToKnowCard() {
       <ul className="space-y-2 text-sm text-muted-foreground">
         <li className="flex items-start gap-3">
           <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
-          Prijzen en aanbod kunnen per seizoen verschillen.
+          Reserveren is weer mogelijk — zo ben je zeker van een tafeltje.
         </li>
         <li className="flex items-start gap-3">
           <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
@@ -137,7 +137,7 @@ function GoodToKnowCard() {
         </li>
         <li className="flex items-start gap-3">
           <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
-          Groepen &amp; events: we maken graag een aanbod op maat.
+          Met meer dan 10 personen? Mail groepen@dikkezeehond.nl.
         </li>
       </ul>
     </div>
@@ -153,6 +153,7 @@ export default function Home() {
   const [hasExternalConsent, setHasExternalConsent] = useState(false);
   const [showConsentModal, setShowConsentModal] = useState(false);
   const [showReservationNotice, setShowReservationNotice] = useState(true);
+  const [reservationRequested, setReservationRequested] = useState(false);
 
   useEffect(() => {
     const stored = getStoredConsent();
@@ -177,12 +178,57 @@ export default function Home() {
   function acceptNecessaryOnly() {
     setStoredConsent({ necessary: true, externalContent: false });
     setHasExternalConsent(false);
+    setReservationRequested(false);
     setShowConsentModal(false);
   }
 
   function openPrivacySettings() {
     setShowConsentModal(true);
   }
+
+  function openReservations() {
+    setReservationRequested(true);
+
+    if (!hasExternalConsent) {
+      setShowConsentModal(true);
+    }
+  }
+
+  useEffect(() => {
+    if (!reservationRequested || !consentLoaded || !hasExternalConsent) return;
+
+    let attempts = 0;
+    let timeoutId: number | null = null;
+
+    const tryOpen = () => {
+      const guestplan = (window as any)._gstpln;
+
+      if (typeof guestplan?.openWidget === "function") {
+        guestplan.openWidget();
+        setReservationRequested(false);
+        return;
+      }
+
+      attempts += 1;
+      if (attempts < 20) {
+        timeoutId = window.setTimeout(tryOpen, 150);
+        return;
+      }
+
+      setReservationRequested(false);
+      toast({
+        title: "Reserveren",
+        description:
+          "De reserveringsmodule kon niet worden geopend. Probeer het opnieuw of neem contact met ons op.",
+      });
+    };
+
+    tryOpen();
+
+    return () => {
+      if (timeoutId !== null) window.clearTimeout(timeoutId);
+    };
+  }, [reservationRequested, consentLoaded, hasExternalConsent, toast]);
 
   // Hero parallax
   const { scrollY } = useScroll();
@@ -381,7 +427,7 @@ export default function Home() {
             className="absolute inset-0 z-10 bg-black"
             style={{ opacity: heroOverlayOpacity }}
           />
-          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/55 via-black/10 to-black/25" />
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#241a14]/70 via-[#3a291e]/10 to-[#5a3b28]/30" />
 
           <div className="container relative z-20 px-6 pt-24 text-center md:text-left">
             <motion.div
@@ -390,23 +436,38 @@ export default function Home() {
               transition={{ duration: 0.85, delay: 0.15 }}
               className="max-w-3xl"
             >
+              <div className="mb-5 inline-flex items-center rounded-full border border-white/25 bg-[#6f4a32]/35 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/95 backdrop-blur-md md:text-xs">
+                Herfst aan zee
+              </div>
+
               <p className="mb-4 text-xs font-medium uppercase tracking-[0.35em] text-white/90 md:text-sm">
                 Strandpaviljoen • De Koog • Texel
               </p>
 
               <h1 className="mb-6 font-heading text-5xl font-bold leading-[1.03] text-white md:text-7xl lg:text-8xl">
-                Beach More
+                Uitwaaien.
                 <br />
-                Worry Less
+                Opwarmen.
                 <br />
+                Genieten.
               </h1>
 
-              <p className="mb-10 max-w-xl text-lg font-light leading-relaxed text-white/90 md:text-xl">
-                Van je eerste koffie tot de laatste proost bij zonsondergang —
-                zand tussen je tenen en het geluid van de zee op de achtergrond.
+              <p className="mb-10 max-w-2xl text-lg font-light leading-relaxed text-white/90 md:text-xl">
+                Na een frisse strandwandeling schuif je bij ons lekker aan voor
+                koffie, lunch, borrel of diner — warm binnen, met uitzicht op
+                zee.
               </p>
 
               <div className="flex flex-col justify-center gap-3 sm:flex-row md:justify-start">
+                <Button
+                  type="button"
+                  size="lg"
+                  onClick={openReservations}
+                  className="h-12 rounded-full bg-[#eadbc8] px-8 text-base font-semibold text-[#2d2119] shadow-lg transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-[#f4e9dc] hover:shadow-xl active:scale-[0.99]"
+                >
+                  Reserveer je tafel <ArrowRight className="h-4 w-4" />
+                </Button>
+
                 <Button
                   asChild
                   size="lg"
@@ -433,9 +494,8 @@ export default function Home() {
             </div>
           </motion.div>
         </section>
-
         {/* MENU */}
-        <section id="menu" className="bg-secondary/20 py-10 md:py-20">
+        <section id="menu" className="bg-[#f8f5f0] py-10 md:py-20">
           <div className="container mx-auto px-6">
             <div className="flex flex-col items-start gap-10 lg:flex-row md:gap-12">
               <div className="space-y-6 lg:w-5/12 md:space-y-8">
@@ -848,7 +908,7 @@ export default function Home() {
         {/* VIBE */}
         <section
           id="vibe"
-          className="relative overflow-hidden bg-[#c9c6b0] py-14 text-slate-900 md:py-36"
+          className="relative overflow-hidden bg-[#c8b59f] py-14 text-slate-900 md:py-36"
         >
           <div ref={vibeRef} className="pointer-events-none absolute inset-0" />
 
@@ -865,18 +925,19 @@ export default function Home() {
             />
           </motion.div>
 
-          <div className="absolute inset-0 z-10 bg-[#c9c6b0]/70" />
+          <div className="absolute inset-0 z-10 bg-[#c8b59f]/72" />
 
           <div className="container relative z-20 mx-auto px-6 text-center">
             <span className="mb-4 block text-xs font-bold uppercase tracking-[0.35em] text-slate-700">
-              De plek
+              Herfst op Texel
             </span>
             <h2 className="mb-8 font-heading text-4xl text-slate-900 md:text-6xl">
-              Stijlvol op het zand
+              Warm binnen. Zee voor de deur.
             </h2>
             <p className="mx-auto max-w-3xl text-xl font-light leading-relaxed text-slate-700/90 md:text-2xl">
-              Binnen warm en comfortabel, buiten zonnig en relaxed. Kom voor het
-              uitzicht, blijf voor de sfeer.
+              Even uitwaaien op het strand en daarna lekker naar binnen. Voor
+              goede koffie, iets lekkers, een borrel of uitgebreid eten met
+              zeezicht.
             </p>
 
             <div className="mx-auto mt-10 max-w-4xl">
@@ -963,6 +1024,13 @@ export default function Home() {
                       gelegenheid — we zorgen graag voor een ontspannen setting
                       aan zee.
                     </p>
+
+                    <a
+                      href="mailto:groepen@dikkezeehond.nl"
+                      className="mt-5 inline-flex h-11 items-center justify-center rounded-full border border-border bg-background px-6 text-sm font-semibold text-primary transition hover:bg-secondary/40"
+                    >
+                      Vraag naar de mogelijkheden
+                    </a>
                   </div>
                 </div>
               </div>
@@ -1197,7 +1265,7 @@ export default function Home() {
       </main>
 
       {/* FOOTER */}
-      <footer className="mt-auto bg-[#c9c6b0] text-slate-900">
+      <footer className="mt-auto bg-[#bda98f] text-slate-900">
         <div className="h-px w-full bg-black/10" />
 
         <div className="mx-auto max-w-6xl px-6 py-14">
@@ -1214,7 +1282,7 @@ export default function Home() {
 
               <p className="mt-4 max-w-md text-sm leading-relaxed text-slate-700">
                 Strandpaviljoen Dikke Zeehond — warm, stijlvol en relaxed op het
-                zand. Van koffie in de ochtend tot borrel bij zonsondergang.
+                zand. Van koffie na een strandwandeling tot borrel met zeezicht.
               </p>
 
               <div className="mt-6 flex flex-wrap items-center gap-3 text-sm">
@@ -1227,7 +1295,7 @@ export default function Home() {
                 </a>
 
                 <a
-                  href="mailto:groepen@dikkezeehond.nl"
+                  href="mailto:info@dikkezeehond.nl"
                   className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/35 px-4 py-2 text-slate-900 hover:bg-white/55"
                 >
                   <span className="text-slate-700">Mail</span>
@@ -1370,6 +1438,10 @@ export default function Home() {
       <ReservationNoticeModal
         open={showReservationNotice}
         onClose={() => setShowReservationNotice(false)}
+        onReserve={() => {
+          setShowReservationNotice(false);
+          openReservations();
+        }}
       />
 
       <CookieConsentModal
@@ -1456,9 +1528,11 @@ function GroupsSlideshow({
 function ReservationNoticeModal({
   open,
   onClose,
+  onReserve,
 }: {
   open: boolean;
   onClose: () => void;
+  onReserve: () => void;
 }) {
   return (
     <AnimatePresence>
@@ -1479,28 +1553,28 @@ function ReservationNoticeModal({
             transition={{ duration: 0.2 }}
           >
             <div className="space-y-4 text-center">
-              <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent">
-                Belangrijk bericht
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#8a5b3d]">
+                Herfst aan zee
               </p>
 
               <h3 className="font-heading text-3xl text-primary">
-                Even goed om te weten
+                Reserveren kan weer
               </h3>
 
               <p className="text-base leading-relaxed text-muted-foreground">
-                De maanden Juni, Juli & Augustus nemen wij tijdelijk geen
-                reserveringen aan. Zo houden we meer ruimte en flexibiliteit om
-                iedereen op een fijne manier te ontvangen.
+                De zomerdrukte ligt weer achter ons en reserveren is weer
+                mogelijk. Wil je zeker zijn van een tafeltje? Reserveer dan
+                eenvoudig via onze website.
                 <br />
                 <br />
-                Je bent in deze periode nog steeds van harte welkom om gewoon
-                lekker langs te komen.
+                Je bent natuurlijk ook zonder reservering van harte welkom om
+                gewoon lekker langs te komen.
                 <br />
                 <br />
                 Kom je met een groep groter dan 10 personen? Stuur dan graag
                 even een mailtje naar{" "}
                 <a
-                  href="mailto:info@dikkezeehond.nl"
+                  href="mailto:groepen@dikkezeehond.nl"
                   className="font-medium text-primary underline underline-offset-4"
                 >
                   groepen@dikkezeehond.nl
@@ -1508,13 +1582,21 @@ function ReservationNoticeModal({
                 .
               </p>
 
-              <div className="pt-2">
+              <div className="flex flex-col justify-center gap-3 pt-2 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={onReserve}
+                  className="inline-flex h-12 items-center justify-center rounded-full bg-[#6f4a32] px-8 text-sm font-semibold text-white transition hover:bg-[#5f3f2b]"
+                >
+                  Reserveer je tafel
+                </button>
+
                 <button
                   type="button"
                   onClick={onClose}
-                  className="inline-flex h-12 items-center justify-center rounded-full bg-accent px-8 text-sm font-semibold text-white hover:bg-accent/90"
+                  className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-background px-8 text-sm font-semibold text-primary transition hover:bg-secondary/40"
                 >
-                  Begrepen
+                  Verder kijken
                 </button>
               </div>
             </div>
