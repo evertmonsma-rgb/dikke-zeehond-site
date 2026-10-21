@@ -28,14 +28,104 @@ import { useToast } from "@/hooks/use-toast";
 import GoogleReviewsWidget from "@/components/GoogleReviewsWidget";
 import InstagramWidget from "@/components/InstagramWidget";
 
-/** HERO: video first, then slideshow */
-const HERO_VIDEO_SRC = "/videos/DikkeZeehond-2026.mp4";
-const HERO_SLIDES = [
-  { src: "/photos/exterior.jpg", alt: "Dikke Zeehond aan het strand" },
-  { src: "/photos/Wine_Beach.png", alt: "Wijn Strand" },
-  { src: "/photos/exterior3.JPG", alt: "Buiten" },
-  { src: "/photos/interior-3.jpg", alt: "Bar & gezellige sfeer" },
-  { src: "/photos/interior-4.jpg", alt: "Binnen met zeezicht" },
+/** HERO: rustige foto-slideshow */
+const PAVILION_PHOTO = "/photos/hero/hero-01-zonsondergang.jpg";
+// Decoratief motief: vervang dit pad gerust door een eigen zeehondillustratie.
+const SEAL_MOTIF_SRC = "/brand/zeehond-schets.png";
+
+type HeroSlide = {
+  src: string;
+  alt: string;
+  position?: string;
+  mobilePosition?: string;
+  warmth?: number;
+};
+
+const HERO_SLIDES: HeroSlide[] = [
+  {
+    src: PAVILION_PHOTO,
+    alt: "Dikke Zeehond aan zee tijdens een warme zonsondergang",
+    position: "50% 58%",
+    mobilePosition: "58% 50%",
+    warmth: 0.02,
+  },
+  {
+    src: "/photos/hero/hero-02-terras.jpg",
+    alt: "Terras van Dikke Zeehond",
+    position: "50% 52%",
+    mobilePosition: "62% 50%",
+    warmth: 0.045,
+  },
+  {
+    src: "/photos/hero/hero-03-interieur.jpg",
+    alt: "Warm interieur met houten tafels en planten",
+    position: "50% 50%",
+    mobilePosition: "58% 50%",
+    warmth: 0.035,
+  },
+  {
+    src: "/photos/hero/hero-04-zeezicht.jpg",
+    alt: "Terraszitjes met uitzicht op zee",
+    position: "50% 52%",
+    mobilePosition: "52% 50%",
+    warmth: 0.035,
+  },
+  {
+    src: "/photos/hero/hero-05-warm-binnen.jpg",
+    alt: "Sfeervol interieur van Dikke Zeehond",
+    position: "50% 48%",
+    mobilePosition: "62% 50%",
+    warmth: 0.04,
+  },
+  {
+    src: "/photos/hero/hero-06-lunch.jpg",
+    alt: "Kleurrijk lunchgerecht bij Dikke Zeehond",
+    position: "50% 52%",
+    mobilePosition: "50% 50%",
+    warmth: 0.025,
+  },
+  {
+    src: "/photos/hero/hero-07-koffie.jpg",
+    alt: "Warme koffie en chocolademelk",
+    position: "50% 58%",
+    mobilePosition: "50% 58%",
+    warmth: 0.04,
+  },
+  {
+    src: "/photos/hero/hero-08-delen.jpg",
+    alt: "Tafel vol gerechten om samen te delen",
+    position: "50% 50%",
+    mobilePosition: "42% 50%",
+    warmth: 0.03,
+  },
+  {
+    src: "/photos/hero/hero-09-tafel.jpg",
+    alt: "Houten tafel onder warme rotan verlichting",
+    position: "50% 44%",
+    mobilePosition: "58% 50%",
+    warmth: 0.04,
+  },
+  {
+    src: "/photos/hero/hero-10-details.jpg",
+    alt: "Groene planten en warme houten details",
+    position: "50% 57%",
+    mobilePosition: "50% 55%",
+    warmth: 0.03,
+  },
+  {
+    src: "/photos/hero/hero-11-bar.jpg",
+    alt: "De bar met warme verlichting",
+    position: "50% 46%",
+    mobilePosition: "52% 50%",
+    warmth: 0.04,
+  },
+  {
+    src: "/photos/hero/hero-12-binnen.jpg",
+    alt: "Gezellig interieur aan zee",
+    position: "50% 50%",
+    mobilePosition: "55% 50%",
+    warmth: 0.035,
+  },
 ];
 
 const GROUPS_SLIDES = [
@@ -81,8 +171,6 @@ const WEBCAM_YOUTUBE_URL = "https://www.youtube.com/watch?v=f_CtUNq1FR0";
 const WEBCAM_EMBED_SRC =
   "https://www.youtube-nocookie.com/embed/f_CtUNq1FR0?playsinline=1&rel=0&modestbranding=1";
 
-const CONSTELL_SRC = "https://widget.constell.com/assets/index.js";
-
 // Bedrijfsgegevens
 const CONTACT_PHONE = "0222 441110";
 const CONTACT_ADDRESS_LINE1 = "Badweg 202";
@@ -122,7 +210,7 @@ function setStoredConsent(value: ConsentState) {
 
 function GoodToKnowCard() {
   return (
-    <div className="rounded-2xl border border-border bg-background p-6">
+    <div className="dz-warm-card rounded-2xl border border-border bg-background p-6">
       <h3 className="mb-2 font-heading text-xl font-bold text-primary">
         Goed om te weten
       </h3>
@@ -398,19 +486,51 @@ export default function Home() {
     };
   }, [consentLoaded, hasExternalConsent]);
 
-  useEffect(() => {
-    if (!consentLoaded || !hasExternalConsent) return;
-    if (document.querySelector(`script[src="${CONSTELL_SRC}"]`)) return;
-
-    const s = document.createElement("script");
-    s.type = "module";
-    s.src = CONSTELL_SRC;
-    s.async = true;
-    document.body.appendChild(s);
-  }, [consentLoaded, hasExternalConsent]);
-
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground selection:bg-accent selection:text-white">
+    <div className="dz-winter min-h-screen flex flex-col bg-background text-foreground selection:bg-accent selection:text-white">
+      <style>{`
+        .dz-winter { background-color: #E9DDCF; color: #233F52; }
+        .dz-winter .font-heading {
+          font-family: Georgia, "Times New Roman", serif;
+          letter-spacing: -0.025em;
+        }
+        .dz-winter section[id] { scroll-margin-top: 7rem; }
+        .dz-winter .dz-paper {
+          position: relative;
+          isolation: isolate;
+          overflow: hidden;
+          background-color: #E5D7C8;
+          background-image:
+            repeating-linear-gradient(135deg, rgba(137,105,75,0.025) 0px, rgba(137,105,75,0.025) 1px, transparent 1px, transparent 5px),
+            radial-gradient(ellipse at top, #F5EEE6, transparent 75%);
+        }
+        .dz-winter .dz-paper::before,
+        .dz-winter .dz-paper::after {
+          content: "";
+          position: absolute;
+          pointer-events: none;
+          z-index: 0;
+          width: clamp(14rem, 28vw, 28rem);
+          height: 15rem;
+          background: url("${SEAL_MOTIF_SRC}") center / contain no-repeat;
+          opacity: 0.23;
+        }
+        .dz-winter .dz-paper::before { top: 3rem; left: -5rem; transform: rotate(-12deg); }
+        .dz-winter .dz-paper::after { bottom: 2rem; right: -4rem; transform: scaleX(-1) rotate(-8deg); }
+        .dz-winter .dz-paper > .container { position: relative; z-index: 1; }
+        .dz-winter .dz-warm-card {
+          border-color: #D5C4B2;
+          background-color: #F7F0E8;
+          box-shadow: 0 14px 38px rgba(74, 57, 44, 0.07);
+        }
+        @media (max-width: 640px) {
+          .dz-winter .dz-paper::before { left: -8rem; opacity: 0.12; }
+          .dz-winter .dz-paper::after { right: -8rem; opacity: 0.12; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .dz-winter .animate-slide-down { animation: none; }
+        }
+      `}</style>
       <Navigation />
 
       <main className="flex-1">
@@ -420,7 +540,7 @@ export default function Home() {
             className="absolute inset-0 z-0 will-change-transform"
             style={{ y: heroBgY, scale: heroBgScale }}
           >
-            <HeroMedia videoSrc={HERO_VIDEO_SRC} slides={HERO_SLIDES} />
+            <HeroMedia slides={HERO_SLIDES} />
           </motion.div>
 
           <motion.div
@@ -436,8 +556,8 @@ export default function Home() {
               transition={{ duration: 0.85, delay: 0.15 }}
               className="max-w-3xl"
             >
-              <div className="mb-5 inline-flex items-center rounded-full border border-white/25 bg-[#6f4a32]/35 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/95 backdrop-blur-md md:text-xs">
-                Herfst aan zee
+              <div className="mb-5 inline-flex items-center rounded-full border border-white/25 bg-[#5E4635]/35 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/95 backdrop-blur-md md:text-xs">
+                Herfst & winter aan zee
               </div>
 
               <p className="mb-4 text-xs font-medium uppercase tracking-[0.35em] text-white/90 md:text-sm">
@@ -463,7 +583,7 @@ export default function Home() {
                   type="button"
                   size="lg"
                   onClick={openReservations}
-                  className="h-12 rounded-full bg-[#eadbc8] px-8 text-base font-semibold text-[#2d2119] shadow-lg transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-[#f4e9dc] hover:shadow-xl active:scale-[0.99]"
+                  className="h-12 rounded-full bg-[#E5D7C8] px-8 text-base font-semibold text-[#3F3027] shadow-lg transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-[#E8D7C5] hover:shadow-xl active:scale-[0.99]"
                 >
                   Reserveer je tafel <ArrowRight className="h-4 w-4" />
                 </Button>
@@ -494,8 +614,94 @@ export default function Home() {
             </div>
           </motion.div>
         </section>
+        {/* WELKOM: lichte winterse sfeer, met subtiele zeehond-schetsen */}
+        <section
+          id="welkom"
+          className="dz-paper py-16 md:py-24"
+          aria-labelledby="welcome-heading"
+        >
+          <div className="container mx-auto px-6">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-accent">
+                Even uitwaaien. Lekker blijven hangen.
+              </p>
+              <h2
+                id="welcome-heading"
+                className="font-heading text-4xl leading-tight text-primary md:text-6xl"
+              >
+                Een plek om op te warmen aan zee
+              </h2>
+              <div
+                aria-hidden="true"
+                className="mx-auto my-6 h-px w-16 bg-[#b79875]"
+              />
+              <p className="text-lg leading-relaxed text-muted-foreground md:text-xl">
+                Na een strandwandeling, een frisse duik of gewoon voor een goed
+                gesprek. Bij Dikke Zeehond geniet je het hele jaar door van
+                lekkere gerechten, mooie wijnen en een ontspannen sfeer. Buiten
+                de frisse zeelucht, binnen alle tijd om samen te genieten.
+              </p>
+            </div>
+
+            <div className="mx-auto mt-10 grid max-w-4xl gap-6 md:mt-14 md:grid-cols-2">
+              {[
+                {
+                  title: "Warme dranken",
+                  description:
+                    "Handen om een warme kop, uitzicht op zee. Schuif aan voor goede koffie, thee en iets lekkers.",
+                  image: "/photos/interior-3.jpg",
+                  alt: "De gezellige bar van Dikke Zeehond",
+                  href: "#menu",
+                  label: "Tijd voor iets warms",
+                },
+                {
+                  title: "Groepen & events",
+                  description:
+                    "Samen proosten, lang tafelen of iets bijzonders vieren. Wij denken graag mee over jullie moment aan zee.",
+                  image: "/photos/proosten.jpg",
+                  alt: "Samen proosten aan zee",
+                  href: "#groepen",
+                  label: "Maak er iets moois van",
+                },
+              ].map(({ title, description, image, alt, href, label }) => (
+                <a
+                  key={title}
+                  href={href}
+                  className="dz-warm-card group flex flex-col overflow-hidden rounded-3xl border transition-shadow hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+                >
+                  <div className="relative h-44 overflow-hidden">
+                    <img
+                      src={image}
+                      alt={alt}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-0 bg-gradient-to-t from-[#493323]/25 to-transparent"
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col p-7 text-center">
+                    <h3 className="font-heading text-2xl text-primary">
+                      {title}
+                    </h3>
+                    <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+                      {description}
+                    </p>
+                    <span className="mt-6 inline-flex items-center justify-center gap-2 text-sm font-semibold text-primary">
+                      {label}{" "}
+                      <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* MENU */}
-        <section id="menu" className="bg-[#f8f5f0] py-10 md:py-20">
+        <section id="menu" className="bg-[#E6D8C8] py-14 md:py-24">
           <div className="container mx-auto px-6">
             <div className="flex flex-col items-start gap-10 lg:flex-row md:gap-12">
               <div className="space-y-6 lg:w-5/12 md:space-y-8">
@@ -503,8 +709,13 @@ export default function Home() {
                   Eten &amp; drinken
                 </span>
                 <h2 className="font-heading text-4xl text-primary md:text-6xl">
-                  Menukaart
+                  Lekker lang tafelen
                 </h2>
+                <p className="text-lg leading-relaxed text-muted-foreground">
+                  Kom binnen na een frisse dag aan zee. Van lunch tot diner, met
+                  een goed glas en alle tijd voor elkaar. Bekijk onze actuele
+                  menukaart.
+                </p>
 
                 <div className="hidden lg:block">
                   <GoodToKnowCard />
@@ -551,7 +762,7 @@ export default function Home() {
         </section>
 
         {/* WEBCAM */}
-        <section id="webcam" className="bg-background py-10 md:py-24">
+        <section id="webcam" className="bg-[#E9DDCF] py-14 md:py-24">
           <div className="container mx-auto px-6">
             <div className="mx-auto max-w-5xl">
               <div className="mb-7 space-y-3 text-center md:mb-12 md:space-y-4">
@@ -609,10 +820,7 @@ export default function Home() {
         </section>
 
         {/* WERKEN */}
-        <section
-          id="werken"
-          className="scroll-mt-28 bg-background py-10 md:py-16"
-        >
+        <section id="werken" className="dz-paper scroll-mt-28 py-14 md:py-20">
           <div className="container mx-auto px-6">
             <div className="mx-auto grid max-w-6xl grid-cols-1 items-start gap-10 lg:grid-cols-2">
               <div>
@@ -629,7 +837,7 @@ export default function Home() {
                 </p>
 
                 <div className="mt-6 grid gap-3">
-                  <div className="rounded-2xl border border-border bg-white/60 p-5">
+                  <div className="dz-warm-card rounded-2xl border border-border bg-white/60 p-5">
                     <p className="font-semibold text-primary">
                       Wat je kunt verwachten
                     </p>
@@ -645,7 +853,7 @@ export default function Home() {
                     </ul>
                   </div>
 
-                  <div className="rounded-2xl border border-border bg-white/60 p-5">
+                  <div className="dz-warm-card rounded-2xl border border-border bg-white/60 p-5">
                     <p className="font-semibold text-primary">We zoeken o.a.</p>
                     <div className="mt-3 flex flex-wrap gap-2 text-sm">
                       <span className="rounded-full bg-black/5 px-3 py-1">
@@ -667,7 +875,7 @@ export default function Home() {
 
               <div
                 id="solliciteren"
-                className="rounded-3xl border border-border bg-white/60 p-6 shadow-sm backdrop-blur md:p-8"
+                className="dz-warm-card rounded-3xl border border-border bg-white/60 p-6 shadow-sm backdrop-blur md:p-8"
               >
                 <h3 className="font-heading text-2xl text-primary">
                   Solliciteren
@@ -781,7 +989,7 @@ export default function Home() {
         </section>
 
         {/* LOCATION */}
-        <section id="location" className="bg-background py-10 md:py-24">
+        <section id="location" className="bg-[#E9DDCF] py-14 md:py-24">
           <div className="container mx-auto px-6">
             <div className="mx-auto max-w-6xl">
               <div className="mb-7 space-y-3 text-center md:mb-12 md:space-y-4">
@@ -828,7 +1036,7 @@ export default function Home() {
                 </div>
 
                 <div className="flex flex-col gap-6 lg:col-span-2">
-                  <div className="rounded-3xl border border-border bg-white p-7 shadow-sm">
+                  <div className="dz-warm-card rounded-3xl border border-border bg-white p-7 shadow-sm">
                     <h3 className="mb-4 font-heading text-2xl text-primary">
                       Strandpaviljoen Dikke Zeehond
                     </h3>
@@ -908,7 +1116,7 @@ export default function Home() {
         {/* VIBE */}
         <section
           id="vibe"
-          className="relative overflow-hidden bg-[#c8b59f] py-14 text-slate-900 md:py-36"
+          className="relative overflow-hidden bg-[#C7B6A5] py-14 text-slate-900 md:py-36"
         >
           <div ref={vibeRef} className="pointer-events-none absolute inset-0" />
 
@@ -925,11 +1133,11 @@ export default function Home() {
             />
           </motion.div>
 
-          <div className="absolute inset-0 z-10 bg-[#c8b59f]/72" />
+          <div className="absolute inset-0 z-10 bg-[#C7B6A5]/72" />
 
           <div className="container relative z-20 mx-auto px-6 text-center">
             <span className="mb-4 block text-xs font-bold uppercase tracking-[0.35em] text-slate-700">
-              Herfst op Texel
+              Winter op Texel
             </span>
             <h2 className="mb-8 font-heading text-4xl text-slate-900 md:text-6xl">
               Warm binnen. Zee voor de deur.
@@ -954,7 +1162,7 @@ export default function Home() {
         </section>
 
         {/* INSTAGRAM */}
-        <section id="instagram" className="bg-background py-10 md:py-14">
+        <section id="instagram" className="bg-[#E9DDCF] py-14 md:py-20">
           <div className="container mx-auto px-6">
             <div className="mb-7 space-y-3 text-center md:mb-12">
               <span className="text-xs font-bold uppercase tracking-[0.35em] text-accent">
@@ -991,7 +1199,7 @@ export default function Home() {
         </section>
 
         {/* GROEPEN */}
-        <section id="groepen" className="bg-background py-10 md:py-24">
+        <section id="groepen" className="dz-paper py-14 md:py-24">
           <div className="container mx-auto px-6">
             <div className="mx-auto max-w-6xl">
               <div className="mb-10 text-center md:mb-14">
@@ -1013,7 +1221,7 @@ export default function Home() {
               </div>
 
               <div className="mt-8 rounded-3xl border border-border bg-white/70 p-6 shadow-sm backdrop-blur md:p-8">
-                <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr] lg:items-center">
+                <div className="mx-auto max-w-3xl">
                   <div className="mx-auto max-w-3xl text-center">
                     <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent">
                       Een indruk van de sfeer
@@ -1041,7 +1249,7 @@ export default function Home() {
         {/* CONTACT */}
         <section
           id="contact"
-          className="relative overflow-hidden bg-background py-10 md:py-32"
+          className="relative overflow-hidden bg-[#E5D7C8] py-14 md:py-32"
         >
           <div
             ref={contactRef}
@@ -1060,7 +1268,7 @@ export default function Home() {
               decoding="async"
             />
           </motion.div>
-          <div className="absolute inset-0 z-0 bg-gradient-to-b from-background/55 via-background/90 to-background" />
+          <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#E9DDCF]/65 via-[#E9DDCF]/92 to-[#E9DDCF]" />
 
           <motion.div
             className="absolute inset-0 z-0"
@@ -1265,7 +1473,7 @@ export default function Home() {
       </main>
 
       {/* FOOTER */}
-      <footer className="mt-auto bg-[#bda98f] text-slate-900">
+      <footer className="mt-auto bg-[#B7A48F] text-slate-900">
         <div className="h-px w-full bg-black/10" />
 
         <div className="mx-auto max-w-6xl px-6 py-14">
@@ -1546,51 +1754,69 @@ function ReservationNoticeModal({
           />
 
           <motion.div
-            className="fixed inset-x-4 top-1/2 z-[111] mx-auto max-w-lg -translate-y-1/2 rounded-3xl border border-border bg-background p-6 shadow-2xl md:p-8"
+            className="fixed inset-x-4 top-1/2 z-[111] mx-auto max-h-[86vh] max-w-lg -translate-y-1/2 overflow-y-auto rounded-3xl border border-border bg-background p-5 shadow-2xl md:p-7"
             initial={{ opacity: 0, y: 20, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
             transition={{ duration: 0.2 }}
           >
             <div className="space-y-4 text-center">
-              <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#8a5b3d]">
-                Herfst aan zee
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#B77A4A]">
+                Kerst & winter aan zee
               </p>
 
               <h3 className="font-heading text-3xl text-primary">
-                Reserveren kan weer
+                Feestdagen bij Dikke Zeehond
               </h3>
 
-              <p className="text-base leading-relaxed text-muted-foreground">
-                De zomerdrukte ligt weer achter ons en reserveren is weer
-                mogelijk. Wil je zeker zijn van een tafeltje? Reserveer dan
-                eenvoudig via onze website.
-                <br />
-                <br />
-                Je bent natuurlijk ook zonder reservering van harte welkom om
-                gewoon lekker langs te komen.
-                <br />
-                <br />
-                Kom je met een groep groter dan 10 personen? Stuur dan graag
-                even een mailtje naar{" "}
-                <a
-                  href="mailto:groepen@dikkezeehond.nl"
-                  className="font-medium text-primary underline underline-offset-4"
-                >
-                  groepen@dikkezeehond.nl
-                </a>
-                .
-              </p>
+              <div className="space-y-3 text-sm leading-relaxed text-muted-foreground md:text-base">
+                <p>
+                  <strong className="text-primary">25 december</strong> zijn we
+                  gesloten.
+                </p>
+                <p>
+                  Op <strong className="text-primary">26 december</strong> zijn
+                  we open. ’s Avonds serveren we een speciaal kerstmenu,{" "}
+                  <strong className="text-primary">
+                    uitsluitend op reservering
+                  </strong>
+                  .
+                </p>
+                <p>
+                  Tijdens de{" "}
+                  <strong className="text-primary">kerstvakantie</strong> zijn
+                  we geopend van{" "}
+                  <strong className="text-primary">10:00 tot 20:00 uur</strong>.
+                </p>
+                <p>
+                  <strong className="text-primary">31 december</strong> open tot
+                  17:00 uur en{" "}
+                  <strong className="text-primary">1 januari</strong> vanaf
+                  13:00 uur.
+                </p>
+                <div className="mx-auto max-w-md rounded-2xl bg-black/[0.035] px-4 py-3">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#B77A4A]">
+                    Wintertijden keuken vanaf 2 november
+                  </p>
+                  <p className="mt-2">
+                    Zondag t/m donderdag tot{" "}
+                    <strong className="text-primary">19:00</strong>
+                    <br />
+                    Vrijdag & zaterdag tot{" "}
+                    <strong className="text-primary">19:30</strong>
+                  </p>
+                </div>
+                <p>Alle overige dagen zijn we gewoon geopend.</p>
+              </div>
 
-              <div className="flex flex-col justify-center gap-3 pt-2 sm:flex-row">
+              <div className="flex flex-col justify-center gap-3 pt-1 sm:flex-row">
                 <button
                   type="button"
                   onClick={onReserve}
-                  className="inline-flex h-12 items-center justify-center rounded-full bg-[#6f4a32] px-8 text-sm font-semibold text-white transition hover:bg-[#5f3f2b]"
+                  className="inline-flex h-12 items-center justify-center rounded-full bg-[#5E4635] px-8 text-sm font-semibold text-white transition hover:bg-[#4F3A2D]"
                 >
                   Reserveer je tafel
                 </button>
-
                 <button
                   type="button"
                   onClick={onClose}
@@ -1711,143 +1937,82 @@ function CookieConsentModal({
   );
 }
 
-/** HeroMedia */
+/** HeroMedia: foto-slideshow */
 function HeroMedia({
-  videoSrc,
   slides,
-  slideDurationMs = 5200,
+  slideDurationMs = 6000,
 }: {
-  videoSrc: string;
-  slides: { src: string; alt: string }[];
+  slides: HeroSlide[];
   slideDurationMs?: number;
 }) {
   const reduceMotion = useReducedMotion();
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-
-  const [phase, setPhase] = useState<"video" | "slideshow">("video");
   const [slideIndex, setSlideIndex] = useState(0);
-  const [autoplayBlocked, setAutoplayBlocked] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    slides.forEach((s) => {
+    const media = window.matchMedia("(max-width: 640px)");
+    const update = () => setIsMobile(media.matches);
+    update();
+    media.addEventListener?.("change", update);
+    return () => media.removeEventListener?.("change", update);
+  }, []);
+
+  useEffect(() => {
+    const current = slides[slideIndex];
+    const next = slides[(slideIndex + 1) % slides.length];
+    [current, next].forEach((slide) => {
+      if (!slide) return;
       const img = new Image();
-      img.src = s.src;
+      img.src = slide.src;
     });
-  }, [slides]);
+  }, [slideIndex, slides]);
 
   useEffect(() => {
-    if (phase !== "video") return;
-    const v = videoRef.current;
-    if (!v) return;
-
-    const tryPlay = async () => {
-      try {
-        await v.play();
-        setAutoplayBlocked(false);
-      } catch {
-        setAutoplayBlocked(true);
-      }
-    };
-
-    tryPlay();
-    const onLoaded = () => void tryPlay();
-    v.addEventListener("loadedmetadata", onLoaded);
-    return () => v.removeEventListener("loadedmetadata", onLoaded);
-  }, [phase]);
-
-  useEffect(() => {
-    if (phase !== "slideshow") return;
-    if (slides.length <= 1) return;
-    if (reduceMotion) return;
-
-    const id = window.setInterval(
-      () => setSlideIndex((i) => (i + 1) % slides.length),
-      slideDurationMs,
-    );
+    if (slides.length <= 1 || reduceMotion) return;
+    const id = window.setInterval(() => {
+      setSlideIndex((i) => (i + 1) % slides.length);
+    }, slideDurationMs);
     return () => window.clearInterval(id);
-  }, [phase, slides.length, slideDurationMs, reduceMotion]);
+  }, [slides.length, slideDurationMs, reduceMotion]);
 
   const currentSlide = slides[Math.min(slideIndex, slides.length - 1)];
+  const objectPosition =
+    isMobile && currentSlide.mobilePosition
+      ? currentSlide.mobilePosition
+      : (currentSlide.position ?? "50% 50%");
 
   return (
     <div className="absolute inset-0">
       <AnimatePresence mode="wait">
-        {phase === "video" ? (
-          <motion.div
-            key="video"
+        <motion.div
+          key={currentSlide.src}
+          className="absolute inset-0"
+          initial={reduceMotion ? false : { opacity: 0 }}
+          animate={reduceMotion ? undefined : { opacity: 1 }}
+          exit={reduceMotion ? undefined : { opacity: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 1.25, ease: "easeInOut" }}
+        >
+          <motion.img
+            src={currentSlide.src}
+            alt={currentSlide.alt}
+            className="h-full w-full object-cover"
+            style={{ objectPosition }}
+            initial={reduceMotion ? false : { scale: 1.015 }}
+            animate={reduceMotion ? undefined : { scale: 1.055 }}
+            transition={{
+              duration: slideDurationMs / 1000 + 1.4,
+              ease: "linear",
+            }}
+            decoding="async"
+          />
+          <div
+            aria-hidden="true"
             className="absolute inset-0"
-            initial={reduceMotion ? false : { opacity: 0 }}
-            animate={reduceMotion ? undefined : { opacity: 1 }}
-            exit={reduceMotion ? undefined : { opacity: 0 }}
-            transition={{ duration: reduceMotion ? 0 : 0.6, ease: "easeOut" }}
-          >
-            <video
-              ref={videoRef}
-              className="h-full w-full object-cover"
-              src={videoSrc}
-              muted
-              playsInline
-              autoPlay
-              preload="auto"
-              controls={false}
-              onEnded={() => setPhase("slideshow")}
-              onError={() => setPhase("slideshow")}
-            />
-
-            {autoplayBlocked && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <button
-                  type="button"
-                  onClick={async () => {
-                    try {
-                      await videoRef.current?.play();
-                      setAutoplayBlocked(false);
-                    } catch {
-                      setPhase("slideshow");
-                    }
-                  }}
-                  className="h-12 rounded-full border border-white/20 bg-white/15 px-8 text-white shadow-lg backdrop-blur-md transition hover:bg-white/20"
-                >
-                  Klik om video te starten
-                </button>
-              </div>
-            )}
-
-            <button
-              type="button"
-              onClick={() => setPhase("slideshow")}
-              className="absolute bottom-6 right-6 h-10 rounded-full border border-white/15 bg-black/25 px-6 text-xs uppercase tracking-[0.25em] text-white/80 backdrop-blur transition hover:bg-black/35 hover:text-white"
-            >
-              Skip
-            </button>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="slideshow"
-            className="absolute inset-0"
-            initial={reduceMotion ? false : { opacity: 0 }}
-            animate={reduceMotion ? undefined : { opacity: 1 }}
-            exit={reduceMotion ? undefined : { opacity: 0 }}
-            transition={{ duration: reduceMotion ? 0 : 0.7, ease: "easeOut" }}
-          >
-            <AnimatePresence mode="wait">
-              <motion.img
-                key={currentSlide.src}
-                src={currentSlide.src}
-                alt={currentSlide.alt}
-                className="h-full w-full object-cover"
-                initial={reduceMotion ? false : { opacity: 0, scale: 1.02 }}
-                animate={reduceMotion ? undefined : { opacity: 1, scale: 1 }}
-                exit={reduceMotion ? undefined : { opacity: 0 }}
-                transition={{
-                  duration: reduceMotion ? 0 : 0.9,
-                  ease: "easeOut",
-                }}
-                decoding="async"
-              />
-            </AnimatePresence>
-          </motion.div>
-        )}
+            style={{
+              background: `rgba(151, 88, 42, ${currentSlide.warmth ?? 0.03})`,
+            }}
+          />
+        </motion.div>
       </AnimatePresence>
     </div>
   );
