@@ -614,89 +614,6 @@ export default function Home() {
             </div>
           </motion.div>
         </section>
-        {/* FEESTDAGEN & WINTERTIJDEN */}
-        <section className="bg-[#E9DDCF] py-8 md:py-12">
-          <div className="container mx-auto px-6">
-            <div className="mx-auto max-w-4xl overflow-hidden rounded-3xl border border-[#D5C4B2] bg-[#F7F0E8] shadow-[0_14px_38px_rgba(74,57,44,0.07)]">
-              <div className="grid gap-0 md:grid-cols-[1.25fr_0.75fr]">
-                <div className="p-6 md:p-8">
-                  <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#B77A4A]">
-                    Kerst & winter aan zee
-                  </p>
-
-                  <h2 className="mt-3 font-heading text-3xl text-[#233F52] md:text-4xl">
-                    Feestdagen & wintertijden
-                  </h2>
-
-                  <div className="mt-6 grid gap-3 text-sm leading-relaxed text-slate-700 sm:grid-cols-2 md:text-base">
-                    <p>
-                      <strong className="text-[#233F52]">25 december</strong>
-                      <br />
-                      Gesloten
-                    </p>
-
-                    <p>
-                      <strong className="text-[#233F52]">26 december</strong>
-                      <br />
-                      Open — ’s avonds speciaal kerstmenu, alleen op reservering
-                    </p>
-
-                    <p>
-                      <strong className="text-[#233F52]">Kerstvakantie</strong>
-                      <br />
-                      10:00–20:00
-                    </p>
-
-                    <p>
-                      <strong className="text-[#233F52]">31 december</strong>
-                      <br />
-                      Open tot 17:00
-                    </p>
-
-                    <p>
-                      <strong className="text-[#233F52]">1 januari</strong>
-                      <br />
-                      Open vanaf 13:00
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col justify-between border-t border-[#D5C4B2] bg-[#EFE3D7] p-6 md:border-l md:border-t-0 md:p-8">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#B77A4A]">
-                      Keuken vanaf 2 november
-                    </p>
-
-                    <div className="mt-4 space-y-3 text-sm leading-relaxed text-slate-700 md:text-base">
-                      <p>
-                        <span className="font-semibold text-[#233F52]">
-                          Zo–do
-                        </span>
-                        <br />
-                        10:00 tot 19:00
-                      </p>
-                      <p>
-                        <span className="font-semibold text-[#233F52]">
-                          Vr–za
-                        </span>
-                        <br />
-                        10:00 tot 19:30
-                      </p>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={openReservations}
-                    className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-[#5E4635] px-6 text-sm font-semibold text-white transition hover:bg-[#4F3A2D]"
-                  >
-                    Reserveer voor 26 december
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
         {/* KERSTMENU */}
         <section
           id="kerstmenu"
@@ -813,6 +730,150 @@ export default function Home() {
             </div>
           </div>
         </section>
+        {/* FEESTDAGEN & WINTERTIJDEN */}
+        <section className="bg-[#E9DDCF] py-8 md:py-12">
+          <div className="container mx-auto px-6">
+            <div className="mx-auto max-w-4xl overflow-hidden rounded-3xl border border-[#D5C4B2] bg-[#F7F0E8] shadow-[0_14px_38px_rgba(74,57,44,0.07)]">
+              <div className="grid gap-0 md:grid-cols-[1.25fr_0.75fr]">
+                <div className="p-6 md:p-8">
+                  <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#B77A4A]">
+                    Kerst & winter aan zee
+                  </p>
+
+                  <h2 className="mt-3 font-heading text-3xl text-[#233F52] md:text-4xl">
+                    Feestdagen & wintertijden
+                  </h2>
+
+                  <div className="mt-6 grid gap-3 text-sm leading-relaxed text-slate-700 sm:grid-cols-2 md:text-base">
+                    <p>
+                      <strong className="text-[#233F52]">25 december</strong>
+                      <br />
+                      Gesloten
+                    </p>
+
+                    <p>
+                      <strong className="text-[#233F52]">26 december</strong>
+                      <br />
+                      Open — ’s avonds speciaal kerstmenu, alleen op reservering
+                    </p>
+
+                    <p>
+                      <strong className="text-[#233F52]">Kerstvakantie</strong>
+                      <br />
+                      10:00–20:00
+                    </p>
+
+                    <p>
+                      <strong className="text-[#233F52]">31 december</strong>
+                      <br />
+                      Open tot 17:00
+                    </p>
+
+                    <p>
+                      <strong className="text-[#233F52]">1 januari</strong>
+                      <br />
+                      Open vanaf 13:00
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col justify-between border-t border-[#D5C4B2] bg-[#EFE3D7] p-6 md:border-l md:border-t-0 md:p-8">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#B77A4A]">
+                      Keuken vanaf 2 november
+                    </p>
+
+                    <div className="mt-4 space-y-3 text-sm leading-relaxed text-slate-700 md:text-base">
+                      <p>
+                        <span className="font-semibold text-[#233F52]">
+                          Zo–do
+                        </span>
+                        <br />
+                        10:00 tot 19:00
+                      </p>
+                      <p>
+                        <span className="font-semibold text-[#233F52]">
+                          Vr–za
+                        </span>
+                        <br />
+                        10:00 tot 19:30
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={openReservations}
+                    className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-[#5E4635] px-6 text-sm font-semibold text-white transition hover:bg-[#4F3A2D]"
+                  >
+                    Reserveer voor 26 december
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* MENU */}
+        <section id="menu" className="bg-[#E6D8C8] py-14 md:py-24">
+          <div className="container mx-auto px-6">
+            <div className="flex flex-col items-start gap-10 lg:flex-row md:gap-12">
+              <div className="space-y-6 lg:w-5/12 md:space-y-8">
+                <span className="text-xs font-bold uppercase tracking-[0.35em] text-accent">
+                  Eten &amp; drinken
+                </span>
+                <h2 className="font-heading text-4xl text-primary md:text-6xl">
+                  Lekker lang tafelen
+                </h2>
+                <p className="text-lg leading-relaxed text-muted-foreground">
+                  Kom binnen na een frisse dag aan zee. Van lunch tot diner, met
+                  een goed glas en alle tijd voor elkaar. Bekijk onze actuele
+                  menukaart.
+                </p>
+
+                <div className="hidden lg:block">
+                  <GoodToKnowCard />
+                </div>
+              </div>
+
+              <div className="w-full lg:w-7/12">
+                <div className="relative h-[66vh] w-full overflow-hidden rounded-3xl border border-border bg-white shadow-sm md:h-[80vh]">
+                  <img
+                    src="/menu/Zomer_menu_cover.png"
+                    alt="Menukaart cover"
+                    className="absolute inset-0 h-full w-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/25" />
+
+                  <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-3 sm:flex-row">
+                    <Button
+                      asChild
+                      className="h-12 rounded-full bg-accent px-10 text-white transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-accent/90 hover:shadow-[0_14px_34px_rgba(0,0,0,0.12)] active:scale-[0.99]"
+                    >
+                      <a
+                        href="/menu/Menukaart_zomer_2026.pdf"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Open menukaart (PDF) <ArrowRight className="h-4 w-4" />
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="mt-5 lg:hidden">
+                  <GoodToKnowCard />
+                </div>
+
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Tip: op sommige telefoons opent de PDF in een nieuw tabblad.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
         {/* WELKOM: lichte winterse sfeer, met subtiele zeehond-schetsen */}
         <section
           id="welkom"
@@ -904,67 +965,6 @@ export default function Home() {
                   </div>
                 </a>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* MENU */}
-        <section id="menu" className="bg-[#E6D8C8] py-14 md:py-24">
-          <div className="container mx-auto px-6">
-            <div className="flex flex-col items-start gap-10 lg:flex-row md:gap-12">
-              <div className="space-y-6 lg:w-5/12 md:space-y-8">
-                <span className="text-xs font-bold uppercase tracking-[0.35em] text-accent">
-                  Eten &amp; drinken
-                </span>
-                <h2 className="font-heading text-4xl text-primary md:text-6xl">
-                  Lekker lang tafelen
-                </h2>
-                <p className="text-lg leading-relaxed text-muted-foreground">
-                  Kom binnen na een frisse dag aan zee. Van lunch tot diner, met
-                  een goed glas en alle tijd voor elkaar. Bekijk onze actuele
-                  menukaart.
-                </p>
-
-                <div className="hidden lg:block">
-                  <GoodToKnowCard />
-                </div>
-              </div>
-
-              <div className="w-full lg:w-7/12">
-                <div className="relative h-[66vh] w-full overflow-hidden rounded-3xl border border-border bg-white shadow-sm md:h-[80vh]">
-                  <img
-                    src="/menu/Zomer_menu_cover.png"
-                    alt="Menukaart cover"
-                    className="absolute inset-0 h-full w-full object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/25" />
-
-                  <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-3 sm:flex-row">
-                    <Button
-                      asChild
-                      className="h-12 rounded-full bg-accent px-10 text-white transition-all duration-300 ease-out hover:scale-[1.02] hover:bg-accent/90 hover:shadow-[0_14px_34px_rgba(0,0,0,0.12)] active:scale-[0.99]"
-                    >
-                      <a
-                        href="/menu/Menukaart_zomer_2026.pdf"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Open menukaart (PDF) <ArrowRight className="h-4 w-4" />
-                      </a>
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="mt-5 lg:hidden">
-                  <GoodToKnowCard />
-                </div>
-
-                <p className="mt-3 text-xs text-muted-foreground">
-                  Tip: op sommige telefoons opent de PDF in een nieuw tabblad.
-                </p>
-              </div>
             </div>
           </div>
         </section>
