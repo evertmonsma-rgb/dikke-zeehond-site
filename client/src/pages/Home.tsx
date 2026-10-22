@@ -614,6 +614,89 @@ export default function Home() {
             </div>
           </motion.div>
         </section>
+        {/* FEESTDAGEN & WINTERTIJDEN */}
+        <section className="bg-[#E9DDCF] py-8 md:py-12">
+          <div className="container mx-auto px-6">
+            <div className="mx-auto max-w-4xl overflow-hidden rounded-3xl border border-[#D5C4B2] bg-[#F7F0E8] shadow-[0_14px_38px_rgba(74,57,44,0.07)]">
+              <div className="grid gap-0 md:grid-cols-[1.25fr_0.75fr]">
+                <div className="p-6 md:p-8">
+                  <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#B77A4A]">
+                    Kerst & winter aan zee
+                  </p>
+
+                  <h2 className="mt-3 font-heading text-3xl text-[#233F52] md:text-4xl">
+                    Feestdagen & wintertijden
+                  </h2>
+
+                  <div className="mt-6 grid gap-3 text-sm leading-relaxed text-slate-700 sm:grid-cols-2 md:text-base">
+                    <p>
+                      <strong className="text-[#233F52]">25 december</strong>
+                      <br />
+                      Gesloten
+                    </p>
+
+                    <p>
+                      <strong className="text-[#233F52]">26 december</strong>
+                      <br />
+                      Open — ’s avonds speciaal kerstmenu, alleen op reservering
+                    </p>
+
+                    <p>
+                      <strong className="text-[#233F52]">Kerstvakantie</strong>
+                      <br />
+                      10:00–20:00
+                    </p>
+
+                    <p>
+                      <strong className="text-[#233F52]">31 december</strong>
+                      <br />
+                      Open tot 17:00
+                    </p>
+
+                    <p>
+                      <strong className="text-[#233F52]">1 januari</strong>
+                      <br />
+                      Open vanaf 13:00
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col justify-between border-t border-[#D5C4B2] bg-[#EFE3D7] p-6 md:border-l md:border-t-0 md:p-8">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#B77A4A]">
+                      Keuken vanaf 2 november
+                    </p>
+
+                    <div className="mt-4 space-y-3 text-sm leading-relaxed text-slate-700 md:text-base">
+                      <p>
+                        <span className="font-semibold text-[#233F52]">
+                          Zo–do
+                        </span>
+                        <br />
+                        10:00 tot 19:00
+                      </p>
+                      <p>
+                        <span className="font-semibold text-[#233F52]">
+                          Vr–za
+                        </span>
+                        <br />
+                        10:00 tot 19:30
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={openReservations}
+                    className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-[#5E4635] px-6 text-sm font-semibold text-white transition hover:bg-[#4F3A2D]"
+                  >
+                    Reserveer voor 26 december
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
         {/* WELKOM: lichte winterse sfeer, met subtiele zeehond-schetsen */}
         <section
           id="welkom"
@@ -643,7 +726,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="mx-auto mt-10 grid max-w-4xl gap-6 md:mt-14 md:grid-cols-2">
+            <div className="mx-auto mt-10 grid max-w-6xl gap-6 md:mt-14 md:grid-cols-3">
               {[
                 {
                   title: "Warme dranken",
@@ -653,6 +736,15 @@ export default function Home() {
                   alt: "De gezellige bar van Dikke Zeehond",
                   href: "#menu",
                   label: "Tijd voor iets warms",
+                },
+                {
+                  title: "Winter menukaart",
+                  description:
+                    "Van een ontspannen lunch tot uitgebreid dineren. Ontdek wat er op onze actuele kaart staat.",
+                  image: "/photos/dineren.jpg",
+                  alt: "Sfeervol dineren bij Dikke Zeehond",
+                  href: "#menu",
+                  label: "Bekijk de menukaart",
                 },
                 {
                   title: "Groepen & events",
