@@ -697,6 +697,122 @@ export default function Home() {
             </div>
           </div>
         </section>
+        {/* KERSTMENU */}
+        <section
+          id="kerstmenu"
+          className="bg-[#ede0cf] py-14 md:py-24"
+          aria-labelledby="kerstmenu-heading"
+        >
+          <div className="container mx-auto px-6">
+            <div className="flex flex-col items-start gap-10 lg:flex-row md:gap-12">
+              <div className="space-y-6 lg:w-5/12 md:space-y-8">
+                <span className="text-xs font-bold uppercase tracking-[0.35em] text-accent">
+                  26 december · Kerst bij Dikke Zeehond
+                </span>
+                <h2
+                  id="kerstmenu-heading"
+                  className="font-heading text-4xl text-primary md:text-6xl"
+                >
+                  Kerst aan zee
+                </h2>
+                <p className="text-lg leading-relaxed text-muted-foreground">
+                  Vier tweede kerstdag met uitzicht op zee. Schuif ’s avonds aan
+                  voor ons feestelijke kerstmenu, met een goed glas en alle tijd
+                  voor elkaar.
+                </p>
+                <div className="rounded-2xl border border-[#D5C4B2] bg-[#FAF5EC] p-6 shadow-sm">
+                  <h3 className="mb-3 font-heading text-2xl text-primary">
+                    Goed om te weten
+                  </h3>
+                  <ul className="space-y-2 text-sm leading-relaxed text-muted-foreground md:text-base">
+                    <li className="flex gap-3">
+                      <span className="text-accent" aria-hidden="true">
+                        ●
+                      </span>
+                      <span>
+                        4-gangen kerstmenu met amuse · € 75 per persoon.
+                      </span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="text-accent" aria-hidden="true">
+                        ●
+                      </span>
+                      <span>
+                        Op 26 december ’s avonds, uitsluitend op reservering.
+                      </span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="text-accent" aria-hidden="true">
+                        ●
+                      </span>
+                      <span>
+                        Vegetarische keuzes herken je aan de V op de menukaart.
+                      </span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="text-accent" aria-hidden="true">
+                        ●
+                      </span>
+                      <span>
+                        Allergieën of dieetwensen? Vraag het ons team.
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+                <Button
+                  type="button"
+                  onClick={openReservations}
+                  className="h-12 rounded-full bg-accent px-7 text-white hover:bg-accent/90"
+                >
+                  Reserveer voor 26 december{" "}
+                  <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+                </Button>
+              </div>
+              <div className="w-full lg:w-7/12">
+                <div className="relative overflow-hidden rounded-3xl border border-border bg-[#F7F0E8] shadow-sm">
+                  <a
+                    href="/menu/kerstmenu-2026.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-[-4px] focus-visible:outline-primary"
+                    aria-label="Open kerstmenu als PDF in een nieuw tabblad"
+                  >
+                    <img
+                      src="/menu/kerstmenu-mockup-met-logo.png"
+                      alt="Kerstmenu 2026 van Dikke Zeehond, met het paviljoenlogo, op een feestelijke kersttafel"
+                      className="block h-auto w-full"
+                      width={1055}
+                      height={1491}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </a>
+                  <div className="absolute bottom-6 left-6 right-6 flex">
+                    <Button
+                      asChild
+                      className="h-12 rounded-full bg-accent px-8 text-white shadow-md hover:bg-accent/90"
+                    >
+                      <a
+                        href="/menu/kerstmenu-2026.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Open kerstmenu (PDF){" "}
+                        <ArrowRight
+                          className="ml-2 h-4 w-4"
+                          aria-hidden="true"
+                        />
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Het kerstmenu opent in een nieuw tabblad.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
         {/* WELKOM: lichte winterse sfeer, met subtiele zeehond-schetsen */}
         <section
           id="welkom"
