@@ -66,11 +66,12 @@ const PHOTOS = {
   lunch: "/photos/hero/hero-06-lunch.jpg",
   interior: "/photos/hero/hero-03-interieur.jpg",
   sea: "/photos/hero/hero-04-zeezicht.jpg",
+  team: "/photos/hero/hero-13-team.jpg",
   table: "/photos/hero/hero-09-tafel.jpg",
   drinks: "/photos/hero/hero-08-delen.jpg", // Deze foto toont warme chocolademelk.
 } as const;
 
-// De tekst blijft vast staan; alleen deze vier foto's wisselen rustig door.
+// De tekst blijft vast staan; alleen deze vijf foto's wisselen rustig door.
 const HERO_SLIDES = [
   {
     src: PHOTOS.hero,
@@ -107,6 +108,15 @@ const HERO_SLIDES = [
     height: 1365,
     position: "50% 50%",
     mobilePosition: "45% 50%",
+  },
+  {
+    src: PHOTOS.team,
+    label: "Samen aan zee",
+    alt: "Het team van Dikke Zeehond staat met de armen om elkaar heen aan het strand van Texel",
+    width: 2048,
+    height: 1365,
+    position: "50% 85%",
+    mobilePosition: "50% 50%",
   },
 ] as const;
 const HERO_HOLD_MS = 7000;
