@@ -1148,6 +1148,10 @@ export default function Home() {
                 {item.text}
               </a>
             ))}
+            <a className="dz-nav-jobs" href={SITE.jobs}>
+              Werken bij
+              <ArrowUpRight size={14} aria-hidden="true" />
+            </a>
             <button
               type="button"
               className="dz-nav-webcam"
@@ -1179,6 +1183,17 @@ export default function Home() {
             className="dz-mobile-nav"
             aria-label="Mobiele navigatie"
           >
+            <a
+              className="dz-mobile-jobs"
+              href={SITE.jobs}
+              onClick={() => setMobileMenu(false)}
+            >
+              <span>
+                <strong>Werken bij Dikke Zeehond</strong>
+                <small>Bijbaan, tussenjaar of een nieuwe uitdaging</small>
+              </span>
+              <ArrowUpRight size={20} aria-hidden="true" />
+            </a>
             {navItems.map((item) => (
               <a
                 key={item.href}
@@ -1205,17 +1220,48 @@ export default function Home() {
               <ArrowUpRight size={18} aria-hidden="true" />
             </button>
             <BookingLink onClick={() => setMobileMenu(false)} />
-            <div className="dz-mobile-nav-extra">
-              <a href={SITE.jobs} onClick={() => setMobileMenu(false)}>
-                Werken bij
-              </a>
-            </div>
           </nav>
         )}
       </header>
 
       <main id="main" ref={mainRef}>
         <HeroSlideshow onOpenWebcam={() => setPanel("webcam")} />
+
+        <section
+          className="dz-careers-callout"
+          aria-labelledby="dz-careers-title"
+        >
+          <div className="dz-shell dz-careers-grid">
+            <img
+              className="dz-careers-photo"
+              src={PHOTOS.team}
+              alt="Het team van Dikke Zeehond samen aan zee"
+              width={2048}
+              height={1365}
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="dz-careers-copy">
+              <p className="dz-eyebrow dz-eyebrow-light">
+                Werken bij Dikke Zeehond
+              </p>
+              <h2 id="dz-careers-title">
+                Jouw volgende stap? <em>Aan zee.</em>
+              </h2>
+            </div>
+            <p className="dz-careers-summary">
+              Een bijbaan naast je studie, een tussenjaar aan zee of als
+              Texelaar toe aan iets nieuws? Vertel ons wat jij zoekt.
+            </p>
+            <div className="dz-careers-action">
+              <a className="dz-button dz-careers-button" href={SITE.jobs}>
+                Kom bij ons werken
+                <ArrowUpRight size={17} aria-hidden="true" />
+              </a>
+              <p>Geen cv of motivatiebrief nodig.</p>
+            </div>
+          </div>
+        </section>
 
         <section
           id="welkom"
@@ -2120,7 +2166,7 @@ const STYLES = `
 .dz-christmas .dz-actions{gap:20px}
 .dz-christmas .dz-button{background:#f0dcc1;color:#30382d!important}
 .dz-christmas .dz-button:hover{background:#fff2df}
-.dz-christmas-image{position:relative;display:block;width:100%;max-width:425px;justify-self:end;transform:rotate(2deg)}
+.dz-christmas-image{position:relative;display:block;width:100%;max-width:425px;justify-self:end;transform:none}
 .dz-christmas-image>img{width:100%;height:auto;border-radius:4px;box-shadow:0 18px 55px #0004}
 .dz-christmas-image>span{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:10px 0;border-bottom:1px solid #ffffff40;color:var(--dz-cream);font-size:11px;font-weight:600;line-height:1.5}
 .dz-section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:60px;margin-bottom:43px}
@@ -2228,8 +2274,8 @@ const STYLES = `
 .dz-lightbox-image{width:100%;max-height:72svh;object-fit:contain;background:#eee6da}
 @media(min-width:1550px){.dz-hero-content{padding-block:65px 105px}}
 @media(max-width:1100px){.dz-shell{width:calc(100% - 72px)}.dz-header-inner{gap:22px}.dz-desktop-nav{gap:18px}.dz-food-grid,.dz-groups-grid{gap:60px}.dz-christmas-grid{gap:65px}.dz-intro{gap:60px}.dz-visit-grid{gap:28px}.dz-visit-grid{grid-template-columns:.9fr 1.15fr}.dz-visit-image{grid-column:1/-1;min-height:240px}.dz-visit-image>img{object-position:50% 55%}.dz-visit-image>div{background:linear-gradient(90deg,#1e261bd4,transparent 80%)}.dz-footer-top{gap:40px}.dz-footer-bottom>span:nth-child(2){max-width:420px}}
-@media(max-width:850px){.dz-shell{width:calc(100% - 48px)}.dz-header-inner{height:74px;gap:16px}.dz-desktop-nav{display:none}.dz-header-booking{margin-left:auto}.dz-menu-toggle{display:flex}.dz-brand-symbol{width:35px;height:37px}.dz-brand-word{width:90px;height:40px}.dz-mobile-nav{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:var(--dz-cream);padding:8px 24px 22px;border-bottom:1px solid var(--dz-line);box-shadow:0 15px 25px #30382d14;max-height:calc(100svh - 90px);overflow-y:auto}.dz-mobile-nav>a:not(.dz-button){display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--dz-line);font-size:14px}.dz-mobile-nav>.dz-button{margin-top:18px}.dz-mobile-nav-extra{display:flex;justify-content:center;gap:25px;margin-top:20px}.dz-mobile-nav-extra>a,.dz-mobile-nav-extra>button{border:0;background:transparent;padding:3px;font-size:11px;color:var(--dz-muted)}.dz-section{padding-block:70px}.dz-hero{height:calc(100svh - 109px);min-height:620px;max-height:780px}.dz-hero h1{font-size:clamp(4.6rem,10vw,6rem)}.dz-intro{gap:40px;padding-block:60px}.dz-intro h2{font-size:2.4rem}.dz-intro-copy>p{font-size:13px}.dz-food-grid,.dz-groups-grid{gap:38px}.dz-food-visual{min-height:540px}.dz-photo-note{right:-15px;bottom:25px;padding:17px;font-size:14px}.dz-food-copy h2,.dz-groups-copy h2{font-size:2.8rem}.dz-food-copy>p:not(.dz-eyebrow):not(.dz-small-note),.dz-groups-copy>p:not(.dz-eyebrow):not(.dz-small-note){font-size:13px}.dz-christmas-grid{gap:45px;grid-template-columns:1.15fr .85fr}.dz-christmas h2{font-size:3.9rem}.dz-christmas .dz-eyebrow{font-size:9px}.dz-christmas-menu strong{font-size:18px}.dz-price{font-size:45px}.dz-christmas-image{transform:rotate(1deg)}.dz-gallery{gap:16px}.dz-gallery-tall{height:390px}.dz-gallery-wide{height:285px;margin-top:35px}.dz-gallery-small{height:320px;margin-top:60px}.dz-gallery-item>span{left:15px;right:15px;font-size:10px}.dz-section-heading{gap:35px}.dz-section-heading>p{max-width:250px;font-size:12px}.dz-groups-image{min-height:520px}.dz-groups-image>span{left:15px;right:15px;font-size:14px}.dz-review-invitation{align-items:flex-start;flex-direction:column;gap:20px}.dz-footer-bottom{flex-wrap:wrap}.dz-footer-bottom>span:nth-child(2){order:3;width:100%;max-width:none}}
-@media(max-width:620px){.dz-shell{width:calc(100% - 40px)}.dz-section{padding-block:55px}.dz-home h2{font-size:2.6rem}.dz-eyebrow{font-size:9px;margin-bottom:17px!important;letter-spacing:.17em}.dz-announcement{gap:8px;font-size:10px;min-height:34px}.dz-announcement-extra{display:none}.dz-header-inner{height:70px;gap:10px}.dz-brand{gap:8px}.dz-brand-symbol{width:31px;height:33px}.dz-brand-word{width:78px;height:35px}.dz-header-booking{min-height:38px;padding:9px 13px;font-size:10px;gap:7px}.dz-menu-toggle{width:36px}.dz-hero{min-height:610px;height:calc(100svh - 104px);max-height:790px}.dz-hero-image{object-position:var(--dz-slide-mobile-position,68% 50%)}.dz-hero-shade{background:linear-gradient(90deg,#161b14a6,#161b1452),linear-gradient(0deg,#161b1480,transparent 65%)}.dz-hero-content{padding-block:53px 98px;justify-content:center}.dz-hero h1{font-size:clamp(3.7rem,14.4vw,5.6rem);line-height:1.01;margin-bottom:24px}.dz-hero-copy{font-size:13px;line-height:1.85;margin-bottom:27px!important}.dz-hero .dz-actions{gap:10px;width:100%;flex-direction:column;align-items:flex-start}.dz-hero .dz-button{min-height:47px;padding:12px 18px;min-width:220px;font-size:12px}.dz-hero-bottom{bottom:24px;font-size:9px;padding-top:15px;letter-spacing:.02em}.dz-hero-bottom{gap:10px}.dz-hero-tools{gap:8px}.dz-hero-discover{gap:9px}.dz-hero-discover>span{display:none}.dz-slideshow-controls{gap:4px}.dz-slide-toggle{width:32px;height:32px}.dz-slide-dot{width:24px;height:32px}.dz-slide-dot[aria-pressed=true]>span{width:17px}.dz-intro{grid-template-columns:1fr;gap:23px;padding-block:46px}.dz-intro h2{font-size:2.25rem}.dz-intro-copy>p{font-size:13px;line-height:1.9;margin-bottom:13px}.dz-food-grid{grid-template-columns:1fr;gap:35px}.dz-food-visual{min-height:0;height:390px}.dz-food-visual>img{object-position:50% 50%}.dz-photo-note{right:-5px;bottom:23px;font-size:14px;gap:12px;padding:17px}.dz-food-copy h2{font-size:2.8rem}.dz-food-copy>p:not(.dz-eyebrow):not(.dz-small-note){font-size:13px;margin-block:20px}.dz-menu-moments{margin-block:22px 25px}.dz-menu-moments>div{padding-block:12px}.dz-food-copy>.dz-button{width:100%;font-size:12px}.dz-christmas-grid{grid-template-columns:1fr;gap:35px}.dz-christmas h2{font-size:3.9rem}.dz-christmas-copy>p:not(.dz-eyebrow):not(.dz-small-note):not(.dz-christmas-reservation){font-size:13px;margin-block:20px}.dz-christmas-menu{margin-block:23px;padding-block:19px}.dz-christmas-menu strong{font-size:20px}.dz-price{font-size:52px}.dz-christmas .dz-actions{align-items:flex-start;flex-direction:column;gap:14px}.dz-christmas .dz-button{width:100%;font-size:12px}.dz-christmas-image{width:84%;max-width:330px;justify-self:center;transform:rotate(1deg)}.dz-christmas-image>span{font-size:10px}.dz-section-heading{display:block;margin-bottom:28px}.dz-section-heading>p{max-width:none;font-size:13px;margin-top:20px;margin-bottom:0}.dz-section-heading>.dz-text-link,.dz-section-heading>.dz-button{margin-top:23px}.dz-gallery{grid-template-columns:1fr 1fr;gap:12px}.dz-gallery-tall{grid-row:span 2;height:435px}.dz-gallery-wide{margin-top:0;height:210px}.dz-gallery-small{margin-top:0;height:213px}.dz-gallery-item>span{font-size:9px;bottom:13px;left:12px;right:12px;line-height:1.4}.dz-gallery-item>span>svg{width:15px;height:15px}.dz-instagram-link{font-size:11px;margin-top:22px}.dz-groups-grid{grid-template-columns:1fr;gap:35px}.dz-groups-image{min-height:0;height:360px}.dz-groups-image>img{object-position:45% 50%}.dz-groups-image>span{bottom:18px;padding:12px 15px;font-size:15px}.dz-groups-copy h2{font-size:2.7rem}.dz-group-options>a{padding-block:16px}.dz-group-options strong{font-size:21px}.dz-groups-copy>.dz-button{width:100%;font-size:12px}.dz-reviews h2{font-size:2.4rem}.dz-review-invitation{padding-block:22px;gap:18px}.dz-review-invitation p{font-size:13px}.dz-review-invitation .dz-button{width:100%;font-size:11px}.dz-review-invitation span{font-size:10px}.dz-visit-grid{grid-template-columns:1fr;gap:35px}.dz-visit-grid h3{font-size:25px}.dz-address{padding-bottom:28px;border-bottom:1px solid var(--dz-line)}.dz-visit .dz-section-heading>.dz-button{width:100%}.dz-address>p{font-size:13px}.dz-contact-links>a{font-size:13px}.dz-hours dl>div{font-size:12px;padding-block:12px}.dz-hours .dz-small-note{font-size:11px}.dz-hours-label{font-size:11px}.dz-holiday-hours summary{font-size:12px}.dz-holiday-hours dl>div{font-size:11px}.dz-visit-image{min-height:300px}.dz-visit-image>div{background:linear-gradient(0deg,#1e261bd4,transparent 95%)}.dz-visit-image>div>p{font-size:31px}.dz-visit-image .dz-button{font-size:11px}.dz-footer{padding:45px 0 calc(96px + env(safe-area-inset-bottom))}.dz-footer-top{grid-template-columns:1fr 1fr;gap:32px 22px;padding-bottom:30px}.dz-footer-top>div:first-child{grid-column:1/-1}.dz-footer-top>div>p{font-size:12px}.dz-footer .dz-brand-symbol{width:38px;height:40px}.dz-footer .dz-brand-word{width:96px;height:43px}.dz-footer-links{gap:15px}.dz-footer-links>a,.dz-footer-links>button{font-size:10px;line-height:1.7}.dz-footer-bottom{font-size:9px;gap:12px}.dz-mobile-bar{position:fixed;bottom:0;left:0;right:0;z-index:70;display:grid;grid-template-columns:1fr 1.3fr;gap:10px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(246,242,234,.98);border-top:1px solid var(--dz-line);box-shadow:0 -5px 22px #151b1112;backdrop-filter:blur(10px)}.dz-mobile-bar>a{display:flex;align-items:center;justify-content:center;gap:13px;font-size:12px;font-weight:600;min-height:42px}.dz-mobile-bar .dz-button{padding:10px 16px;min-height:42px}.dz-consent{left:12px;bottom:calc(77px + env(safe-area-inset-bottom));width:calc(100% - 24px);padding:19px;max-height:calc(100svh - 180px)}.dz-consent-title{font-size:19px}.dz-consent p:not(.dz-consent-title){font-size:10px}.dz-consent-actions{gap:8px;margin-top:13px}.dz-consent-actions .dz-button{font-size:10px;padding:10px 8px;min-height:41px}.dz-dialog{padding:22px;max-height:calc(100svh - 24px);width:calc(100% - 24px)}.dz-dialog-header{gap:12px}.dz-dialog-header h2{font-size:28px}.dz-dialog-header .dz-icon-button{width:36px;height:36px}.dz-form-row{grid-template-columns:1fr;gap:0}.dz-form input,.dz-form textarea{font-size:16px}.dz-form .dz-button{width:100%}.dz-webcam-frame,.dz-webcam-poster{aspect-ratio:4/3}.dz-webcam-poster>div{gap:12px;padding:15px}.dz-webcam-poster .dz-button{font-size:10px;min-height:42px;padding:10px 12px}.dz-webcam-poster p{font-size:11px}.dz-lightbox-image{max-height:68svh}.dz-home section[id],.dz-home main[id],.dz-home .dz-anchor{scroll-margin-top:90px}}
+@media(max-width:850px){.dz-shell{width:calc(100% - 48px)}.dz-header-inner{height:74px;gap:16px}.dz-desktop-nav{display:none}.dz-header-booking{margin-left:auto}.dz-menu-toggle{display:flex}.dz-brand-symbol{width:35px;height:37px}.dz-brand-word{width:90px;height:40px}.dz-mobile-nav{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:var(--dz-cream);padding:8px 24px 22px;border-bottom:1px solid var(--dz-line);box-shadow:0 15px 25px #30382d14;max-height:calc(100svh - 90px);overflow-y:auto}.dz-mobile-nav>a:not(.dz-button){display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--dz-line);font-size:14px}.dz-mobile-nav>.dz-button{margin-top:18px}.dz-mobile-nav-extra{display:flex;justify-content:center;gap:25px;margin-top:20px}.dz-mobile-nav-extra>a,.dz-mobile-nav-extra>button{border:0;background:transparent;padding:3px;font-size:11px;color:var(--dz-muted)}.dz-section{padding-block:70px}.dz-hero{height:calc(100svh - 109px);min-height:620px;max-height:780px}.dz-hero h1{font-size:clamp(4.6rem,10vw,6rem)}.dz-intro{gap:40px;padding-block:60px}.dz-intro h2{font-size:2.4rem}.dz-intro-copy>p{font-size:13px}.dz-food-grid,.dz-groups-grid{gap:38px}.dz-food-visual{min-height:540px}.dz-photo-note{right:-15px;bottom:25px;padding:17px;font-size:14px}.dz-food-copy h2,.dz-groups-copy h2{font-size:2.8rem}.dz-food-copy>p:not(.dz-eyebrow):not(.dz-small-note),.dz-groups-copy>p:not(.dz-eyebrow):not(.dz-small-note){font-size:13px}.dz-christmas-grid{gap:45px;grid-template-columns:1.15fr .85fr}.dz-christmas h2{font-size:3.9rem}.dz-christmas .dz-eyebrow{font-size:9px}.dz-christmas-menu strong{font-size:18px}.dz-price{font-size:45px}.dz-christmas-image{transform:none}.dz-gallery{gap:16px}.dz-gallery-tall{height:390px}.dz-gallery-wide{height:285px;margin-top:35px}.dz-gallery-small{height:320px;margin-top:60px}.dz-gallery-item>span{left:15px;right:15px;font-size:10px}.dz-section-heading{gap:35px}.dz-section-heading>p{max-width:250px;font-size:12px}.dz-groups-image{min-height:520px}.dz-groups-image>span{left:15px;right:15px;font-size:14px}.dz-review-invitation{align-items:flex-start;flex-direction:column;gap:20px}.dz-footer-bottom{flex-wrap:wrap}.dz-footer-bottom>span:nth-child(2){order:3;width:100%;max-width:none}}
+@media(max-width:620px){.dz-shell{width:calc(100% - 40px)}.dz-section{padding-block:55px}.dz-home h2{font-size:2.6rem}.dz-eyebrow{font-size:9px;margin-bottom:17px!important;letter-spacing:.17em}.dz-announcement{gap:8px;font-size:10px;min-height:34px}.dz-announcement-extra{display:none}.dz-header-inner{height:70px;gap:10px}.dz-brand{gap:8px}.dz-brand-symbol{width:31px;height:33px}.dz-brand-word{width:78px;height:35px}.dz-header-booking{min-height:38px;padding:9px 13px;font-size:10px;gap:7px}.dz-menu-toggle{width:36px}.dz-hero{min-height:610px;height:calc(100svh - 104px);max-height:790px}.dz-hero-image{object-position:var(--dz-slide-mobile-position,68% 50%)}.dz-hero-shade{background:linear-gradient(90deg,#161b14a6,#161b1452),linear-gradient(0deg,#161b1480,transparent 65%)}.dz-hero-content{padding-block:53px 98px;justify-content:center}.dz-hero h1{font-size:clamp(3.7rem,14.4vw,5.6rem);line-height:1.01;margin-bottom:24px}.dz-hero-copy{font-size:13px;line-height:1.85;margin-bottom:27px!important}.dz-hero .dz-actions{gap:10px;width:100%;flex-direction:column;align-items:flex-start}.dz-hero .dz-button{min-height:47px;padding:12px 18px;min-width:220px;font-size:12px}.dz-hero-bottom{bottom:24px;font-size:9px;padding-top:15px;letter-spacing:.02em}.dz-hero-bottom{gap:10px}.dz-hero-tools{gap:8px}.dz-hero-discover{gap:9px}.dz-hero-discover>span{display:none}.dz-slideshow-controls{gap:4px}.dz-slide-toggle{width:32px;height:32px}.dz-slide-dot{width:24px;height:32px}.dz-slide-dot[aria-pressed=true]>span{width:17px}.dz-intro{grid-template-columns:1fr;gap:23px;padding-block:46px}.dz-intro h2{font-size:2.25rem}.dz-intro-copy>p{font-size:13px;line-height:1.9;margin-bottom:13px}.dz-food-grid{grid-template-columns:1fr;gap:35px}.dz-food-visual{min-height:0;height:390px}.dz-food-visual>img{object-position:50% 50%}.dz-photo-note{right:-5px;bottom:23px;font-size:14px;gap:12px;padding:17px}.dz-food-copy h2{font-size:2.8rem}.dz-food-copy>p:not(.dz-eyebrow):not(.dz-small-note){font-size:13px;margin-block:20px}.dz-menu-moments{margin-block:22px 25px}.dz-menu-moments>div{padding-block:12px}.dz-food-copy>.dz-button{width:100%;font-size:12px}.dz-christmas-grid{grid-template-columns:1fr;gap:35px}.dz-christmas h2{font-size:3.9rem}.dz-christmas-copy>p:not(.dz-eyebrow):not(.dz-small-note):not(.dz-christmas-reservation){font-size:13px;margin-block:20px}.dz-christmas-menu{margin-block:23px;padding-block:19px}.dz-christmas-menu strong{font-size:20px}.dz-price{font-size:52px}.dz-christmas .dz-actions{align-items:flex-start;flex-direction:column;gap:14px}.dz-christmas .dz-button{width:100%;font-size:12px}.dz-christmas-image{width:84%;max-width:330px;justify-self:center;transform:none}.dz-christmas-image>span{font-size:10px}.dz-section-heading{display:block;margin-bottom:28px}.dz-section-heading>p{max-width:none;font-size:13px;margin-top:20px;margin-bottom:0}.dz-section-heading>.dz-text-link,.dz-section-heading>.dz-button{margin-top:23px}.dz-gallery{grid-template-columns:1fr 1fr;gap:12px}.dz-gallery-tall{grid-row:span 2;height:435px}.dz-gallery-wide{margin-top:0;height:210px}.dz-gallery-small{margin-top:0;height:213px}.dz-gallery-item>span{font-size:9px;bottom:13px;left:12px;right:12px;line-height:1.4}.dz-gallery-item>span>svg{width:15px;height:15px}.dz-instagram-link{font-size:11px;margin-top:22px}.dz-groups-grid{grid-template-columns:1fr;gap:35px}.dz-groups-image{min-height:0;height:360px}.dz-groups-image>img{object-position:45% 50%}.dz-groups-image>span{bottom:18px;padding:12px 15px;font-size:15px}.dz-groups-copy h2{font-size:2.7rem}.dz-group-options>a{padding-block:16px}.dz-group-options strong{font-size:21px}.dz-groups-copy>.dz-button{width:100%;font-size:12px}.dz-reviews h2{font-size:2.4rem}.dz-review-invitation{padding-block:22px;gap:18px}.dz-review-invitation p{font-size:13px}.dz-review-invitation .dz-button{width:100%;font-size:11px}.dz-review-invitation span{font-size:10px}.dz-visit-grid{grid-template-columns:1fr;gap:35px}.dz-visit-grid h3{font-size:25px}.dz-address{padding-bottom:28px;border-bottom:1px solid var(--dz-line)}.dz-visit .dz-section-heading>.dz-button{width:100%}.dz-address>p{font-size:13px}.dz-contact-links>a{font-size:13px}.dz-hours dl>div{font-size:12px;padding-block:12px}.dz-hours .dz-small-note{font-size:11px}.dz-hours-label{font-size:11px}.dz-holiday-hours summary{font-size:12px}.dz-holiday-hours dl>div{font-size:11px}.dz-visit-image{min-height:300px}.dz-visit-image>div{background:linear-gradient(0deg,#1e261bd4,transparent 95%)}.dz-visit-image>div>p{font-size:31px}.dz-visit-image .dz-button{font-size:11px}.dz-footer{padding:45px 0 calc(96px + env(safe-area-inset-bottom))}.dz-footer-top{grid-template-columns:1fr 1fr;gap:32px 22px;padding-bottom:30px}.dz-footer-top>div:first-child{grid-column:1/-1}.dz-footer-top>div>p{font-size:12px}.dz-footer .dz-brand-symbol{width:38px;height:40px}.dz-footer .dz-brand-word{width:96px;height:43px}.dz-footer-links{gap:15px}.dz-footer-links>a,.dz-footer-links>button{font-size:10px;line-height:1.7}.dz-footer-bottom{font-size:9px;gap:12px}.dz-mobile-bar{position:fixed;bottom:0;left:0;right:0;z-index:70;display:grid;grid-template-columns:1fr 1.3fr;gap:10px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(246,242,234,.98);border-top:1px solid var(--dz-line);box-shadow:0 -5px 22px #151b1112;backdrop-filter:blur(10px)}.dz-mobile-bar>a{display:flex;align-items:center;justify-content:center;gap:13px;font-size:12px;font-weight:600;min-height:42px}.dz-mobile-bar .dz-button{padding:10px 16px;min-height:42px}.dz-consent{left:12px;bottom:calc(77px + env(safe-area-inset-bottom));width:calc(100% - 24px);padding:19px;max-height:calc(100svh - 180px)}.dz-consent-title{font-size:19px}.dz-consent p:not(.dz-consent-title){font-size:10px}.dz-consent-actions{gap:8px;margin-top:13px}.dz-consent-actions .dz-button{font-size:10px;padding:10px 8px;min-height:41px}.dz-dialog{padding:22px;max-height:calc(100svh - 24px);width:calc(100% - 24px)}.dz-dialog-header{gap:12px}.dz-dialog-header h2{font-size:28px}.dz-dialog-header .dz-icon-button{width:36px;height:36px}.dz-form-row{grid-template-columns:1fr;gap:0}.dz-form input,.dz-form textarea{font-size:16px}.dz-form .dz-button{width:100%}.dz-webcam-frame,.dz-webcam-poster{aspect-ratio:4/3}.dz-webcam-poster>div{gap:12px;padding:15px}.dz-webcam-poster .dz-button{font-size:10px;min-height:42px;padding:10px 12px}.dz-webcam-poster p{font-size:11px}.dz-lightbox-image{max-height:68svh}.dz-home section[id],.dz-home main[id],.dz-home .dz-anchor{scroll-margin-top:90px}}
 @media(max-width:360px){.dz-hero-tagline{max-width:105px;line-height:1.8}.dz-shell{width:calc(100% - 32px)}.dz-header-booking{padding:9px 10px;gap:5px}.dz-brand-word{width:68px}.dz-brand-symbol{width:28px}.dz-hero h1{font-size:3.6rem}.dz-hero-copy{font-size:12px}.dz-food-visual{height:340px}.dz-gallery{gap:9px}.dz-gallery-tall{height:379px}.dz-gallery-wide{height:185px}.dz-gallery-small{height:185px}.dz-gallery-item>span{left:9px;right:9px;font-size:8px}.dz-consent-actions .dz-button{font-size:9px}.dz-dialog{padding:18px}.dz-christmas h2{font-size:3.6rem}}
 /* Strandwebcam: direct vindbaar, zonder een extra video op de homepage te laden. */
 .dz-home .dz-nav-webcam{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:10px 0;border:0;background:transparent;color:var(--dz-ink);font-size:11px;font-weight:600;line-height:1.4;white-space:nowrap}
@@ -2256,6 +2302,56 @@ const STYLES = `
 .dz-instagram-consent-copy>.dz-small-note{max-width:440px;font-size:10px;line-height:1.8}
 @media(max-width:850px){.dz-instagram-consent{grid-template-columns:1fr 1.1fr}.dz-instagram-consent-copy{padding:25px}.dz-instagram-consent-copy>.dz-button{font-size:11px;padding:12px 15px;gap:9px}}
 @media(max-width:620px){.dz-instagram .dz-section-heading>.dz-text-link{margin-top:20px}.dz-instagram-consent{grid-template-columns:minmax(0,1fr)}.dz-instagram-consent>img{height:auto;min-height:0;aspect-ratio:3/2;object-fit:contain}.dz-instagram-consent-copy{padding:25px 22px}.dz-instagram-consent-copy>h3{font-size:26px}.dz-instagram-consent-copy>.dz-button{width:100%;font-size:12px}.dz-instagram-consent-copy>.dz-small-note{font-size:10px}.dz-instagram-feed{min-height:220px}}
+
+/* Werken bij: zichtbaar in de navigatie en direct na de slideshow.
+   Dit blok is direct leesbaar; bestaande animaties blijven ongewijzigd. */
+.dz-home .dz-desktop-nav .dz-nav-jobs{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:10px 13px;border:1px solid #cfc3ac;border-radius:4px;background:#e9dfcc;color:var(--dz-olive);font-size:11px;font-weight:700;line-height:1.4;white-space:nowrap}
+.dz-home .dz-desktop-nav .dz-nav-jobs::after{display:none}
+.dz-home .dz-desktop-nav .dz-nav-jobs:hover{background:#ded0b7;border-color:#b7a57c}
+.dz-home .dz-mobile-nav>a.dz-mobile-jobs{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:10px 0 8px;padding:16px;border:1px solid #cfc3ac;border-radius:5px;background:#e9dfcc;color:var(--dz-olive);text-decoration:none;white-space:normal}
+.dz-mobile-jobs>span{min-width:0}
+.dz-mobile-jobs strong{display:block;font-size:14px;line-height:1.5;font-weight:700}
+.dz-mobile-jobs small{display:block;margin-top:4px;font-size:11px;line-height:1.6;color:#555b4e}
+.dz-home .dz-mobile-nav>a.dz-mobile-jobs:hover{background:#ded0b7}
+.dz-careers-callout{background:var(--dz-olive);color:var(--dz-cream);border-top:1px solid #ffffff20}
+.dz-careers-grid{display:grid;grid-template-columns:180px minmax(0,1fr) auto;grid-template-areas:"photo copy action" "photo summary action";gap:8px 28px;align-items:center;padding-block:30px}
+.dz-careers-photo{grid-area:photo;display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:contain;border-radius:4px;background:#e5e2dc}
+.dz-careers-copy{grid-area:copy;min-width:0;align-self:end}
+.dz-careers-copy .dz-eyebrow{font-size:9px;letter-spacing:.17em;margin-bottom:10px!important;color:#ead7b9}
+.dz-home .dz-careers-copy h2{font-size:clamp(27px,2.6vw,35px);line-height:1.16;letter-spacing:-.03em;color:var(--dz-cream)}
+.dz-careers-copy h2 em{color:#ead7b9}
+.dz-careers-summary{grid-area:summary;align-self:start;max-width:540px;font-size:12px;line-height:1.85;color:#e1e0d5}
+.dz-careers-action{grid-area:action;display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0}
+.dz-home .dz-careers-button{max-width:100%;background:#f0dcc1;color:#30382d!important;border-color:#f0dcc1;font-size:12px;white-space:normal}
+.dz-home .dz-careers-button:hover{background:#fff2df;border-color:#fff2df}
+.dz-careers-action>p{font-size:10px;line-height:1.6;text-align:center;color:#e1e0d5}
+.dz-home .dz-careers-callout :focus-visible{outline-color:#f5dfb8}
+@media(min-width:1041px) and (max-width:1200px){.dz-header-inner{gap:22px}.dz-desktop-nav{gap:15px}.dz-home .dz-desktop-nav .dz-nav-jobs{padding-inline:10px}}
+/* Iets eerder naar het compacte menu, zodat de extra link niet wordt gepropt. */
+@media(min-width:851px) and (max-width:1040px){
+  .dz-desktop-nav{display:none}
+  .dz-header-booking{margin-left:auto}
+  .dz-menu-toggle{display:flex}
+  .dz-mobile-nav{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:var(--dz-cream);padding:8px 24px 22px;border-bottom:1px solid var(--dz-line);box-shadow:0 15px 25px #30382d14;max-height:calc(100svh - 110px);overflow-y:auto}
+  .dz-mobile-nav>a:not(.dz-button):not(.dz-mobile-jobs){display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--dz-line);font-size:14px}
+  .dz-mobile-nav>.dz-button{margin-top:18px}
+}
+@media(min-width:621px) and (max-width:1040px){
+  .dz-careers-grid{grid-template-columns:170px minmax(0,1fr);grid-template-areas:"photo copy" "photo summary" "photo action";column-gap:25px;padding-block:28px}
+  .dz-careers-action{flex-direction:row;justify-content:flex-start;flex-wrap:wrap;gap:10px 15px;margin-top:7px}
+  .dz-careers-action>p{text-align:left}
+}
+@media(max-width:620px){
+  .dz-careers-grid{grid-template-columns:112px minmax(0,1fr);grid-template-areas:"photo copy" "summary summary" "action action";gap:16px;padding-block:25px}
+  .dz-careers-copy{align-self:center}
+  .dz-careers-copy .dz-eyebrow{font-size:8px;letter-spacing:.12em;margin-bottom:8px!important;line-height:1.6}
+  .dz-home .dz-careers-copy h2{font-size:27px;line-height:1.12}
+  .dz-careers-summary{font-size:12px;line-height:1.8}
+  .dz-careers-action{width:100%;gap:9px}
+  .dz-home .dz-careers-button{width:100%;min-height:48px;justify-content:center}
+}
+@media(max-width:360px){.dz-careers-grid{grid-template-columns:88px minmax(0,1fr);gap:14px}.dz-home .dz-careers-copy h2{font-size:25px}}
+
 /* De drie woorden in de openingskop schuiven rustig na elkaar van rechts in.
    Alleen bij het openen; fotowissels en terugscrollen starten dit niet opnieuw.
    Geen verborgen basisstijl: zonder animatie blijven alle woorden leesbaar. */
