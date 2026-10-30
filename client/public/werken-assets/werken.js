@@ -95,6 +95,18 @@
   if (typeof module !== 'undefined' && module.exports) module.exports = { normalize, validateStep, summary, buildPayload, isAccepted, isoDate, salaryText };
   if (typeof document === 'undefined') return;
 
+  // A poster QR or old homepage link can contain #aanmelden. On a phone,
+  // show the team photo first on initial entry rather than skipping the intro.
+  // This runs once; the skip link and subsequent form-step scrolling still work.
+  if (window.matchMedia('(max-width: 760px)').matches && window.location.hash === '#aanmelden') {
+    try {
+      window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search);
+      window.scrollTo(0, 0);
+    } catch {
+      // Restricted/local previews can block replaceState. The form remains usable.
+    }
+  }
+
   const form = document.getElementById('job-form');
   if (!form) return;
   const steps = Array.from(document.querySelectorAll('[data-step]'));
