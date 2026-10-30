@@ -763,6 +763,250 @@ function NearViewport({
   return <div ref={ref}>{enabled && near ? children : null}</div>;
 }
 
+/**
+ * Rustige, duidelijk zichtbare scrollanimaties, los van NearViewport.
+ * Alleen nog niet zichtbare blokken krijgen na het laden een tijdelijke
+ * beginstaat. Zonder JavaScript of bij een fout blijft de inhoud leesbaar.
+ * 'translate' laat bestaande transforms (zoals de kerstkaart) intact.
+ */
+function useScrollReveal(
+  scope: { readonly current: HTMLElement | null },
+  revision: string,
+) {
+  const revealed = useRef(new WeakSet<HTMLElement>());
+
+  useEffect(() => {
+    const root = scope.current;
+    if (
+      !root ||
+      typeof window.matchMedia !== "function" ||
+      !("IntersectionObserver" in window) ||
+      typeof HTMLElement.prototype.animate !== "function" ||
+      !window.CSS?.supports?.("translate", "1px 0")
+    ) {
+      return;
+    }
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const smallScreen = window.matchMedia("(max-width: 620px)");
+    const elements = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-dz-reveal]"),
+    );
+    const prepared = new Set<HTMLElement>();
+    const running = new Map<HTMLElement, Animation>();
+    let observer: IntersectionObserver | null = null;
+    let printing = false;
+    let resizeTimer: number | undefined;
+
+    const cancelRunning = () => {
+      running.forEach((animation) => {
+        animation.onfinish = null;
+        animation.oncancel = null;
+        animation.cancel();
+      });
+      running.clear();
+    };
+
+    const show = (element: HTMLElement, immediate = false) => {
+      // De tijdelijke beginstaat moet ook bij een fout altijd verdwijnen.
+      element.removeAttribute("data-dz-reveal-pending");
+      prepared.delete(element);
+      observer?.unobserve(element);
+      if (revealed.current.has(element)) return;
+      revealed.current.add(element);
+
+      if (
+        immediate ||
+        reducedMotion.matches ||
+        printing ||
+        document.hidden ||
+        element.contains(document.activeElement)
+      ) {
+        return;
+      }
+
+      // Ook mobiel bewust langzaam. Pas alleen deze waarden aan om te tunen.
+      const mobile = smallScreen.matches;
+      const distance = mobile ? 64 : 120;
+      const duration = mobile ? 1600 : 1800;
+      const direction = element.dataset.dzReveal === "left" ? -1 : 1;
+      // Desktop: de tweede kolom volgt heel even later. Op mobiel staat
+      // elk blok onder elkaar en krijgt het zijn eigen startmoment.
+      const delay =
+        !mobile &&
+        element.matches(
+          ".dz-intro-copy, .dz-food-copy, .dz-groups-copy, " +
+            ".dz-christmas-image, .dz-instagram-consent-copy",
+        )
+          ? 160
+          : 0;
+
+      try {
+        const animation = element.animate(
+          [
+            { opacity: 0, translate: `${direction * distance}px 0`, offset: 0 },
+            // De inhoud wordt al leesbaar terwijl hij nog rustig inschuift.
+            { opacity: 1, offset: 0.55 },
+            { opacity: 1, translate: "0px 0", offset: 1 },
+          ],
+          {
+            duration,
+            delay,
+            easing: "cubic-bezier(0.25, 0.1, 0.25, 1)",
+            // Tijdens de korte vertraging niet eerst zichtbaar opflitsen.
+            // Na afloop nemen de normale paginastijlen het weer over.
+            fill: "backwards",
+          },
+        );
+        running.set(element, animation);
+        animation.onfinish = () => {
+          running.delete(element);
+          animation.onfinish = null;
+          animation.oncancel = null;
+          animation.cancel();
+        };
+        animation.oncancel = () => running.delete(element);
+      } catch {
+        // Geen verborgen resttoestand wanneer animate niet werkt.
+      }
+    };
+
+    const observe = () => {
+      observer?.disconnect();
+      if (reducedMotion.matches || printing) {
+        cancelRunning();
+        elements.forEach((element) => show(element, true));
+        return;
+      }
+
+      const viewportHeight =
+        window.innerHeight || document.documentElement.clientHeight;
+      // Niet al bij de eerste pixel aan de schermrand starten. Een blok
+      // moet duidelijk in beeld komen voordat de beweging begint.
+      const bottomInset = Math.round(
+        Math.min(
+          160,
+          Math.max(80, viewportHeight * (smallScreen.matches ? 0.14 : 0.16)),
+        ),
+      );
+      const threshold = 0.12;
+
+      try {
+        observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (
+                entry.isIntersecting &&
+                entry.intersectionRatio >= threshold
+              ) {
+                show(entry.target as HTMLElement);
+              } else if (entry.boundingClientRect.bottom <= 0) {
+                // Na een grote scrollsprong niets boven beeld verborgen houden.
+                show(entry.target as HTMLElement, true);
+              }
+            });
+          },
+          { rootMargin: `0px 0px -${bottomInset}px 0px`, threshold },
+        );
+
+        elements.forEach((element) => {
+          if (revealed.current.has(element)) return;
+          const rect = element.getBoundingClientRect();
+          if (
+            element.contains(document.activeElement) ||
+            rect.bottom <= 0 ||
+            (!prepared.has(element) && rect.top < viewportHeight)
+          ) {
+            // Bij laden, terugnavigeren of een diepe link: wat al zichtbaar
+            // is, blijft zichtbaar. Geen flash van zichtbaar naar onzichtbaar.
+            show(element, true);
+          } else {
+            prepared.add(element);
+            element.setAttribute("data-dz-reveal-pending", "");
+            observer?.observe(element);
+          }
+        });
+      } catch {
+        observer?.disconnect();
+        cancelRunning();
+        elements.forEach((element) => show(element, true));
+      }
+    };
+
+    const onFocus = (event: FocusEvent) => {
+      if (!(event.target instanceof Element)) return;
+      const element = event.target.closest<HTMLElement>("[data-dz-reveal]");
+      if (!element || !root.contains(element)) return;
+      show(element, true);
+      running.get(element)?.cancel();
+      running.delete(element);
+    };
+    const showCurrentView = () => {
+      const viewportHeight =
+        window.innerHeight || document.documentElement.clientHeight;
+      elements.forEach((element) => {
+        if (element.getBoundingClientRect().top < viewportHeight) {
+          show(element, true);
+          running.get(element)?.cancel();
+          running.delete(element);
+        }
+      });
+    };
+    const onResize = () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(observe, 120);
+    };
+    const onVisibility = () => {
+      if (document.hidden) cancelRunning();
+      else observe();
+    };
+    const beforePrint = () => {
+      printing = true;
+      observe();
+    };
+    const afterPrint = () => {
+      printing = false;
+      observe();
+    };
+
+    root.addEventListener("focusin", onFocus);
+    window.addEventListener("resize", onResize, { passive: true });
+    window.addEventListener("hashchange", showCurrentView);
+    window.addEventListener("pageshow", showCurrentView);
+    window.addEventListener("beforeprint", beforePrint);
+    window.addEventListener("afterprint", afterPrint);
+    document.addEventListener("visibilitychange", onVisibility);
+    if (typeof reducedMotion.addEventListener === "function") {
+      reducedMotion.addEventListener("change", observe);
+    } else {
+      reducedMotion.addListener(observe);
+    }
+    observe();
+
+    return () => {
+      observer?.disconnect();
+      window.clearTimeout(resizeTimer);
+      cancelRunning();
+      prepared.forEach((element) =>
+        element.removeAttribute("data-dz-reveal-pending"),
+      );
+      prepared.clear();
+      root.removeEventListener("focusin", onFocus);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("hashchange", showCurrentView);
+      window.removeEventListener("pageshow", showCurrentView);
+      window.removeEventListener("beforeprint", beforePrint);
+      window.removeEventListener("afterprint", afterPrint);
+      document.removeEventListener("visibilitychange", onVisibility);
+      if (typeof reducedMotion.removeEventListener === "function") {
+        reducedMotion.removeEventListener("change", observe);
+      } else {
+        reducedMotion.removeListener(observe);
+      }
+    };
+  }, [scope, revision]);
+}
+
 export default function Home() {
   const [today, setToday] = useState(amsterdamDate);
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -771,6 +1015,7 @@ export default function Home() {
   const [external, setExternal] = useState(false);
   const [consentBanner, setConsentBanner] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const mainRef = useRef<HTMLElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const christmasVisible =
@@ -779,6 +1024,8 @@ export default function Home() {
     today >= CHRISTMAS.announcementFrom && today <= CHRISTMAS.holidaysUntil;
   const winterStarted = today >= "2026-11-02";
   const year = today.slice(0, 4);
+
+  useScrollReveal(mainRef, `${christmasVisible}:${external}`);
 
   useEffect(() => {
     const value = readConsent();
@@ -965,7 +1212,7 @@ export default function Home() {
         )}
       </header>
 
-      <main id="main">
+      <main id="main" ref={mainRef}>
         <HeroSlideshow onOpenWebcam={() => setPanel("webcam")} />
 
         <section
@@ -973,7 +1220,7 @@ export default function Home() {
           className="dz-intro dz-shell"
           aria-labelledby="dz-intro-title"
         >
-          <div>
+          <div data-dz-reveal="right">
             <p className="dz-eyebrow">Een fijne plek aan zee</p>
             <h2 id="dz-intro-title">
               Even uitwaaien.
@@ -981,7 +1228,7 @@ export default function Home() {
               <em>Lekker blijven hangen.</em>
             </h2>
           </div>
-          <div className="dz-intro-copy">
+          <div className="dz-intro-copy" data-dz-reveal="right">
             <p>
               Na een strandwandeling, voor een lange lunch of zomaar omdat je op
               Texel bent. Bij Dikke Zeehond schuif je aan voor goed eten en een
@@ -1000,7 +1247,7 @@ export default function Home() {
           aria-labelledby="dz-food-title"
         >
           <div className="dz-shell dz-food-grid">
-            <div className="dz-food-visual">
+            <div className="dz-food-visual" data-dz-reveal="left">
               <img
                 src={PHOTOS.food}
                 alt="Een tafel met kleurrijke gerechten, brood en kleine schaaltjes bij Dikke Zeehond"
@@ -1014,7 +1261,7 @@ export default function Home() {
                 <span>Met uitzicht smaakt alles beter.</span>
               </div>
             </div>
-            <div className="dz-food-copy">
+            <div className="dz-food-copy" data-dz-reveal="right">
               <p className="dz-eyebrow">Eten & drinken</p>
               <h2 id="dz-food-title">
                 Een lange lunch.
@@ -1075,7 +1322,7 @@ export default function Home() {
             aria-labelledby="dz-christmas-title"
           >
             <div className="dz-shell dz-christmas-grid">
-              <div className="dz-christmas-copy">
+              <div className="dz-christmas-copy" data-dz-reveal="left">
                 <p className="dz-eyebrow dz-eyebrow-light">
                   <Plus size={15} aria-hidden="true" />
                   Tweede kerstdag · 26 december 2026
@@ -1127,6 +1374,7 @@ export default function Home() {
               </div>
               <a
                 className="dz-christmas-image"
+                data-dz-reveal="right"
                 href={CHRISTMAS.menuUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -1155,7 +1403,7 @@ export default function Home() {
           aria-labelledby="dz-atmosphere-title"
         >
           <div className="dz-shell">
-            <div className="dz-section-heading">
+            <div className="dz-section-heading" data-dz-reveal="right">
               <div>
                 <p className="dz-eyebrow">Dit is Dikke Zeehond</p>
                 <h2 id="dz-atmosphere-title">
@@ -1175,6 +1423,7 @@ export default function Home() {
                   key={photo.src}
                   type="button"
                   className={`dz-gallery-item ${photo.className}`}
+                  data-dz-reveal="left"
                   onClick={() => setGalleryIndex(index)}
                   aria-label={`Vergroot foto: ${photo.label}`}
                 >
@@ -1214,7 +1463,7 @@ export default function Home() {
           aria-labelledby="dz-instagram-title"
         >
           <div className="dz-shell">
-            <div className="dz-section-heading">
+            <div className="dz-section-heading" data-dz-reveal="right">
               <div>
                 <p className="dz-eyebrow">
                   <Instagram size={15} aria-hidden="true" />
@@ -1249,6 +1498,7 @@ export default function Home() {
             ) : (
               <div className="dz-instagram-consent">
                 <img
+                  data-dz-reveal="left"
                   src={PHOTOS.team}
                   alt="Het team van Dikke Zeehond samen aan zee"
                   width={2048}
@@ -1256,7 +1506,10 @@ export default function Home() {
                   loading="lazy"
                   decoding="async"
                 />
-                <div className="dz-instagram-consent-copy">
+                <div
+                  className="dz-instagram-consent-copy"
+                  data-dz-reveal="right"
+                >
                   <h3>Meer momenten aan zee.</h3>
                   <p>
                     Van een kijkje in de keuken tot de laatste zonnestralen op
@@ -1287,7 +1540,7 @@ export default function Home() {
           aria-labelledby="dz-groups-title"
         >
           <div className="dz-shell dz-groups-grid">
-            <div className="dz-groups-image">
+            <div className="dz-groups-image" data-dz-reveal="left">
               <img
                 src={PHOTOS.interior}
                 alt="Een lange houten tafel en kleurrijke stoelen in het eigen paviljoen van Dikke Zeehond"
@@ -1298,7 +1551,7 @@ export default function Home() {
               />
               <span>Een mooie plek voor jullie moment.</span>
             </div>
-            <div className="dz-groups-copy">
+            <div className="dz-groups-copy" data-dz-reveal="right">
               <p className="dz-eyebrow">Groepen & vieren</p>
               <h2 id="dz-groups-title">
                 Samen aan tafel.
@@ -1356,7 +1609,7 @@ export default function Home() {
           aria-labelledby="dz-reviews-title"
         >
           <div className="dz-shell">
-            <div className="dz-section-heading">
+            <div className="dz-section-heading" data-dz-reveal="right">
               <div>
                 <p className="dz-eyebrow">Ervaringen van onze gasten</p>
                 <h2 id="dz-reviews-title">
@@ -1412,7 +1665,7 @@ export default function Home() {
         >
           <span id="location" className="dz-anchor" />
           <div className="dz-shell">
-            <div className="dz-section-heading">
+            <div className="dz-section-heading" data-dz-reveal="right">
               <div>
                 <p className="dz-eyebrow">Je bent welkom</p>
                 <h2 id="dz-visit-title">Tot aan zee.</h2>
@@ -1420,7 +1673,7 @@ export default function Home() {
               <BookingLink />
             </div>
             <div className="dz-visit-grid">
-              <div className="dz-address">
+              <div className="dz-address" data-dz-reveal="right">
                 <MapPin size={22} aria-hidden="true" />
                 <h3>Paal 20, De Koog</h3>
                 <p>
@@ -1456,7 +1709,7 @@ export default function Home() {
                   <ArrowRight size={17} aria-hidden="true" />
                 </button>
               </div>
-              <div className="dz-hours">
+              <div className="dz-hours" data-dz-reveal="right">
                 <Clock3 size={22} aria-hidden="true" />
                 <h3>Openingstijden</h3>
                 {!winterStarted && (
@@ -1510,7 +1763,7 @@ export default function Home() {
                   </details>
                 )}
               </div>
-              <div className="dz-visit-image">
+              <div className="dz-visit-image" data-dz-reveal="left">
                 {showMap && external ? (
                   <iframe
                     title="Locatie Dikke Zeehond op Google Maps"
@@ -2001,5 +2254,10 @@ const STYLES = `
 .dz-instagram-consent-copy>.dz-small-note{max-width:440px;font-size:10px;line-height:1.8}
 @media(max-width:850px){.dz-instagram-consent{grid-template-columns:1fr 1.1fr}.dz-instagram-consent-copy{padding:25px}.dz-instagram-consent-copy>.dz-button{font-size:11px;padding:12px 15px;gap:9px}}
 @media(max-width:620px){.dz-instagram .dz-section-heading>.dz-text-link{margin-top:20px}.dz-instagram-consent{grid-template-columns:minmax(0,1fr)}.dz-instagram-consent>img{height:auto;min-height:0;aspect-ratio:3/2;object-fit:contain}.dz-instagram-consent-copy{padding:25px 22px}.dz-instagram-consent-copy>h3{font-size:26px}.dz-instagram-consent-copy>.dz-button{width:100%;font-size:12px}.dz-instagram-consent-copy>.dz-small-note{font-size:10px}.dz-instagram-feed{min-height:220px}}
+/* Scrollanimaties: geen layoutverspringing. Alleen de hook zet pending op
+   nog niet zichtbare blokken; zonder JavaScript blijft alle inhoud zichtbaar. */
+.dz-home [data-dz-reveal-pending]{opacity:0;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.dz-home [data-dz-reveal]{opacity:1!important;translate:none!important;pointer-events:auto!important}}
+@media print{.dz-home [data-dz-reveal]{opacity:1!important;translate:none!important;pointer-events:auto!important}}
 @media(prefers-reduced-motion:reduce){.dz-home *,.dz-home *::before,.dz-home *::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}.dz-button:hover,.dz-gallery-item:hover>img{transform:none}}
 `;
