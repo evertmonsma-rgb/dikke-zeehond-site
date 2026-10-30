@@ -377,11 +377,13 @@ function HeroSlideshow({ onOpenWebcam }: { onOpenWebcam: () => void }) {
       <div className="dz-shell dz-hero-content">
         <p className="dz-eyebrow dz-eyebrow-light">Paal 20 · De Koog · Texel</p>
         <h1 id="dz-hero-title">
-          Uitwaaien.
+          <span className="dz-hero-title-line">Uitwaaien.</span>
           <br />
-          <em>Opwarmen.</em>
+          <span className="dz-hero-title-line">
+            <em>Opwarmen.</em>
+          </span>
           <br />
-          Genieten.
+          <span className="dz-hero-title-line">Genieten.</span>
         </h1>
         <p className="dz-hero-copy">
           De zee voor je. Een goed glas op tafel.
@@ -2254,6 +2256,37 @@ const STYLES = `
 .dz-instagram-consent-copy>.dz-small-note{max-width:440px;font-size:10px;line-height:1.8}
 @media(max-width:850px){.dz-instagram-consent{grid-template-columns:1fr 1.1fr}.dz-instagram-consent-copy{padding:25px}.dz-instagram-consent-copy>.dz-button{font-size:11px;padding:12px 15px;gap:9px}}
 @media(max-width:620px){.dz-instagram .dz-section-heading>.dz-text-link{margin-top:20px}.dz-instagram-consent{grid-template-columns:minmax(0,1fr)}.dz-instagram-consent>img{height:auto;min-height:0;aspect-ratio:3/2;object-fit:contain}.dz-instagram-consent-copy{padding:25px 22px}.dz-instagram-consent-copy>h3{font-size:26px}.dz-instagram-consent-copy>.dz-button{width:100%;font-size:12px}.dz-instagram-consent-copy>.dz-small-note{font-size:10px}.dz-instagram-feed{min-height:220px}}
+/* De drie woorden in de openingskop schuiven rustig na elkaar van rechts in.
+   Alleen bij het openen; fotowissels en terugscrollen starten dit niet opnieuw.
+   Geen verborgen basisstijl: zonder animatie blijven alle woorden leesbaar. */
+.dz-home #dz-hero-title{--dz-hero-title-distance:120px;--dz-hero-title-duration:1800ms}
+.dz-home .dz-hero-title-line{display:inline-block;opacity:1;transform:none}
+@keyframes dz-hero-title-arrive{
+  0%{opacity:0;transform:translate3d(var(--dz-hero-title-distance),0,0)}
+  55%{opacity:1}
+  100%{opacity:1;transform:translate3d(0,0,0)}
+}
+@media(prefers-reduced-motion:no-preference){
+  .dz-home .dz-hero-title-line{
+    animation-name:dz-hero-title-arrive;
+    animation-duration:var(--dz-hero-title-duration);
+    animation-timing-function:cubic-bezier(0.25,0.1,0.25,1);
+    animation-iteration-count:1;
+    animation-fill-mode:backwards;
+    animation-delay:180ms;
+  }
+  .dz-home .dz-hero-title-line:nth-of-type(2){animation-delay:460ms}
+  .dz-home .dz-hero-title-line:nth-of-type(3){animation-delay:740ms}
+}
+@media(max-width:620px){
+  .dz-home #dz-hero-title{--dz-hero-title-distance:64px;--dz-hero-title-duration:1600ms}
+}
+@media(prefers-reduced-motion:reduce){
+  .dz-home .dz-hero-title-line{animation:none!important;opacity:1!important;transform:none!important}
+}
+@media print{
+  .dz-home .dz-hero-title-line{animation:none!important;opacity:1!important;transform:none!important}
+}
 /* Scrollanimaties: geen layoutverspringing. Alleen de hook zet pending op
    nog niet zichtbare blokken; zonder JavaScript blijft alle inhoud zichtbaar. */
 .dz-home [data-dz-reveal-pending]{opacity:0;pointer-events:none}
