@@ -23,6 +23,7 @@ import {
   X,
 } from "lucide-react";
 import GoogleReviewsWidget from "@/components/GoogleReviewsWidget";
+import InstagramWidget from "@/components/InstagramWidget";
 
 // Inhoud die bij een kaart- of seizoenswissel op één plek kan worden aangepast.
 const SITE = {
@@ -1205,6 +1206,81 @@ export default function Home() {
           </div>
         </section>
 
+        {/* De bestaande Instagram-koppeling terug in de homepage.
+            Laad de widget pas na toestemming en in de buurt van de viewport. */}
+        <section
+          id="instagram"
+          className="dz-instagram dz-section"
+          aria-labelledby="dz-instagram-title"
+        >
+          <div className="dz-shell">
+            <div className="dz-section-heading">
+              <div>
+                <p className="dz-eyebrow">
+                  <Instagram size={15} aria-hidden="true" />
+                  @dedikkezeehond
+                </p>
+                <h2 id="dz-instagram-title">
+                  Een kijkje bij
+                  <br />
+                  <em>Dikke Zeehond.</em>
+                </h2>
+              </div>
+              <a
+                className="dz-text-link"
+                href={SITE.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Volg ons op Instagram
+                <ArrowUpRight size={17} aria-hidden="true" />
+                <span className="dz-sr-only">
+                  {" "}
+                  (opent in een nieuw tabblad)
+                </span>
+              </a>
+            </div>
+            {external ? (
+              <div className="dz-instagram-feed">
+                <NearViewport enabled={external}>
+                  <InstagramWidget />
+                </NearViewport>
+              </div>
+            ) : (
+              <div className="dz-instagram-consent">
+                <img
+                  src={PHOTOS.team}
+                  alt="Het team van Dikke Zeehond samen aan zee"
+                  width={2048}
+                  height={1365}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="dz-instagram-consent-copy">
+                  <h3>Meer momenten aan zee.</h3>
+                  <p>
+                    Van een kijkje in de keuken tot de laatste zonnestralen op
+                    het terras. Bekijk onze berichten hier op de website.
+                  </p>
+                  <button
+                    className="dz-button dz-button-dark"
+                    type="button"
+                    onClick={() => chooseConsent(true)}
+                  >
+                    Toestaan &amp; Instagram laden
+                    <ArrowRight size={17} aria-hidden="true" />
+                  </button>
+                  <p className="dz-small-note">
+                    Hiervoor laden we externe inhoud. Met deze keuze sta je ook
+                    de andere externe onderdelen op deze website toe. Je kunt
+                    dit wijzigen bij Privacyvoorkeuren.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
         <section
           id="groepen"
           className="dz-groups dz-section"
@@ -1572,8 +1648,8 @@ export default function Home() {
               Jouw privacy, jouw keuze.
             </p>
             <p>
-              Voor beoordelingen, de kaart en de webcam laden we externe inhoud.
-              Jij kiest of je die wilt toestaan.
+              Voor Instagram, beoordelingen, de kaart en de webcam laden we
+              externe inhoud. Jij kiest of je die wilt toestaan.
             </p>
           </div>
           <div className="dz-consent-actions">
@@ -1911,5 +1987,19 @@ const STYLES = `
 .dz-home .dz-mobile-nav-webcam>span>svg{color:var(--dz-rust)}
 @media(min-width:851px) and (max-width:1100px){.dz-desktop-nav{gap:15px}.dz-home .dz-nav-webcam{gap:5px}}
 @media(max-width:620px){.dz-home .dz-hero-webcam{margin-top:12px;min-height:36px;font-size:12px;gap:9px}.dz-hero-content{padding-bottom:92px}.dz-mobile-bar{grid-template-columns:1fr 1fr 1.2fr;gap:6px;padding-inline:12px}.dz-mobile-bar>a,.dz-mobile-bar>button{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;min-width:0;font-size:11px;font-weight:600;line-height:1.4;white-space:nowrap}.dz-home .dz-mobile-webcam{padding:8px 5px;border:0;border-inline:1px solid var(--dz-line);background:transparent;color:var(--dz-ink)}.dz-home .dz-mobile-webcam>svg{color:var(--dz-rust)}.dz-mobile-bar .dz-button{padding:10px 9px;min-height:44px;font-size:11px;gap:6px}}
+/* Instagram: eigen sectie in de bestaande huisstijl, ook zichtbaar op mobiel. */
+.dz-instagram{background:var(--dz-paper);border-top:1px solid var(--dz-line)}
+.dz-instagram .dz-section-heading{align-items:flex-end}
+.dz-instagram .dz-section-heading>.dz-text-link{flex-shrink:0;margin-bottom:4px}
+.dz-instagram-feed{min-width:0;min-height:280px}
+.dz-instagram-consent{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);background:var(--dz-cream);border:1px solid var(--dz-line);border-radius:5px;overflow:hidden}
+.dz-instagram-consent>img{display:block;width:100%;height:100%;min-height:300px;object-fit:cover;object-position:50% 65%}
+.dz-instagram-consent-copy{padding:clamp(24px,3vw,42px);align-self:center;min-width:0}
+.dz-instagram-consent-copy>h3{font-size:clamp(25px,2.4vw,32px);line-height:1.2;margin-bottom:15px}
+.dz-instagram-consent-copy>p:not(.dz-small-note){max-width:440px;font-size:13px;line-height:1.9;color:var(--dz-muted);margin-bottom:22px}
+.dz-instagram-consent-copy>.dz-button{max-width:100%;white-space:normal}
+.dz-instagram-consent-copy>.dz-small-note{max-width:440px;font-size:10px;line-height:1.8}
+@media(max-width:850px){.dz-instagram-consent{grid-template-columns:1fr 1.1fr}.dz-instagram-consent-copy{padding:25px}.dz-instagram-consent-copy>.dz-button{font-size:11px;padding:12px 15px;gap:9px}}
+@media(max-width:620px){.dz-instagram .dz-section-heading>.dz-text-link{margin-top:20px}.dz-instagram-consent{grid-template-columns:minmax(0,1fr)}.dz-instagram-consent>img{height:auto;min-height:0;aspect-ratio:3/2;object-fit:contain}.dz-instagram-consent-copy{padding:25px 22px}.dz-instagram-consent-copy>h3{font-size:26px}.dz-instagram-consent-copy>.dz-button{width:100%;font-size:12px}.dz-instagram-consent-copy>.dz-small-note{font-size:10px}.dz-instagram-feed{min-height:220px}}
 @media(prefers-reduced-motion:reduce){.dz-home *,.dz-home *::before,.dz-home *::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}.dz-button:hover,.dz-gallery-item:hover>img{transform:none}}
 `;
