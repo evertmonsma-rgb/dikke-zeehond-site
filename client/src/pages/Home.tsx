@@ -35,7 +35,7 @@ const SITE = {
   jobs: "/werken.html#aanmelden",
   address: "Badweg 202",
   city: "1796 AA De Koog, Texel",
-  menuUrl: "/menu/Menukaart_zomer_2026.pdf",
+  menuUrl: "/menu/Menukaart_winter_2027.pdf",
   // De huidige PDF heet zomer 2026; de website noemt deze daarom 'actuele menukaart'.
   // Vervang dit pad zodra de definitieve winterkaart beschikbaar is.
   instagram: "https://www.instagram.com/dedikkezeehond/",
