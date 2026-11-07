@@ -63,62 +63,69 @@ const CHRISTMAS = {
     "https://widget.guestplan.com/?id=SjqtXFn0e0bd256fce2d473ce637333d6d8580e31c2a8692",
 } as const;
 
+// Iedere sectie heeft een eigen foto; de lightbox vergroot uitsluitend de galerijfoto.
 const PHOTOS = {
-  hero: "/photos/hero/hero-01-zonsondergang.jpg",
-  food: "/photos/hero/hero-12-binnen.jpg", // De bestandsnaam is historisch; dit is een eetfoto.
-  lunch: "/photos/hero/hero-06-lunch.jpg",
-  interior: "/photos/hero/hero-03-interieur.jpg",
-  sea: "/photos/hero/hero-04-zeezicht.jpg",
-  team: "/photos/hero/hero-13-team.jpg",
-  table: "/photos/hero/hero-09-tafel.jpg",
-  drinks: "/photos/hero/hero-08-delen.jpg", // Deze foto toont warme chocolademelk.
+  food: "/photos/autumn-2026/shared-table.webp",
+  team: "/photos/autumn-2026/team-beach.webp",
+  table: "/photos/autumn-2026/window-table.webp",
+  bar: "/photos/autumn-2026/warm-bar.webp",
+  drinks: "/photos/autumn-2026/hot-chocolate.webp",
+  hospitality: "/photos/autumn-2026/welcome-service.webp",
+  groups: "/photos/autumn-2026/group-table.webp",
+  arrival: "/photos/autumn-2026/pavilion-entrance.webp",
+  webcam: "/photos/autumn-2026/sea-view.webp",
 } as const;
 
 // De tekst blijft vast staan; alleen deze vijf foto's wisselen rustig door.
 const HERO_SLIDES = [
   {
-    src: PHOTOS.hero,
+    src: "/photos/autumn-2026/hero-sunset.webp",
+    mobileSrc: "/photos/autumn-2026/hero-sunset-mobile.webp",
     label: "Zonsondergang aan zee",
     alt: "Dikke Zeehond aan het strand van Texel tijdens zonsondergang",
     width: 1448,
     height: 1086,
     position: "50% 62%",
-    mobilePosition: "68% 50%",
+    mobilePosition: "50% 50%",
   },
   {
-    src: PHOTOS.sea,
-    label: "Het terras en de zee",
-    alt: "Het terras van Dikke Zeehond met uitzicht op zee",
-    width: 2048,
-    height: 1365,
-    position: "50% 56%",
-    mobilePosition: "55% 50%",
-  },
-  {
-    src: PHOTOS.interior,
+    src: "/photos/autumn-2026/hero-warm-interior.webp",
+    mobileSrc: "/photos/autumn-2026/hero-warm-interior-mobile.webp",
     label: "Warm binnen",
-    alt: "Houten tafels, planten en warme lampen in Dikke Zeehond",
-    width: 2048,
-    height: 1365,
-    position: "50% 52%",
-    mobilePosition: "64% 50%",
+    alt: "Warme lampen en een uitnodigende zithoek bij Dikke Zeehond",
+    width: 2400,
+    height: 1600,
+    position: "50% 55%",
+    mobilePosition: "50% 50%",
   },
   {
-    src: PHOTOS.lunch,
+    src: "/photos/autumn-2026/hero-served-lunch.webp",
+    mobileSrc: "/photos/autumn-2026/hero-served-lunch-mobile.webp",
     label: "Lunchen aan zee",
-    alt: "Een kleurrijk lunchgerecht bij Dikke Zeehond",
-    width: 2048,
-    height: 1365,
-    position: "50% 50%",
-    mobilePosition: "45% 50%",
+    alt: "Lunch met brood en kroketten wordt geserveerd bij Dikke Zeehond",
+    width: 2400,
+    height: 1600,
+    position: "50% 55%",
+    mobilePosition: "50% 50%",
   },
   {
-    src: PHOTOS.team,
-    label: "Samen aan zee",
-    alt: "Het team van Dikke Zeehond staat met de armen om elkaar heen aan het strand van Texel",
-    width: 2048,
-    height: 1365,
-    position: "50% 85%",
+    src: "/photos/autumn-2026/hero-sea-terrace.webp",
+    mobileSrc: "/photos/autumn-2026/hero-sea-terrace-mobile.webp",
+    label: "Het terras en de zee",
+    alt: "Kleurrijke kussens op het terras met uitzicht op het strand en de zee",
+    width: 2400,
+    height: 1600,
+    position: "50% 55%",
+    mobilePosition: "50% 50%",
+  },
+  {
+    src: "/photos/autumn-2026/hero-coffee-cake.webp",
+    mobileSrc: "/photos/autumn-2026/hero-coffee-cake-mobile.webp",
+    label: "Even opwarmen",
+    alt: "Koffie en chocoladegebak aan een houten tafel bij Dikke Zeehond",
+    width: 2400,
+    height: 1600,
+    position: "50% 92%",
     mobilePosition: "50% 50%",
   },
 ] as const;
@@ -135,9 +142,9 @@ const GALLERY = [
     height: 2048,
   },
   {
-    src: PHOTOS.sea,
-    alt: "Het terras van Dikke Zeehond met uitzicht op zee",
-    label: "De zee voor je",
+    src: PHOTOS.bar,
+    alt: "De lange bar met rotan lampen en warme kleuren bij Dikke Zeehond",
+    label: "Schuif gezellig aan",
     className: "dz-gallery-wide",
     width: 2048,
     height: 1365,
@@ -350,26 +357,30 @@ function HeroSlideshow({ onOpenWebcam }: { onOpenWebcam: () => void }) {
         {HERO_SLIDES.map(
           (photo, index) =>
             (index === 0 || images[0] !== "pending") && (
-              <img
+              <picture
                 key={photo.src}
                 className={`dz-hero-image${index === frame.current ? " is-current" : index === frame.previous ? " is-previous" : ""}`}
-                src={photo.src}
-                alt={photo.alt}
                 aria-hidden={index !== frame.current}
-                width={photo.width}
-                height={photo.height}
-                loading="eager"
-                fetchPriority={index === 0 ? "high" : "low"}
-                decoding="async"
                 style={
                   {
                     "--dz-slide-position": photo.position,
                     "--dz-slide-mobile-position": photo.mobilePosition,
                   } as CSSProperties
                 }
-                onLoad={() => imageSettled(index, "ready")}
-                onError={() => imageSettled(index, "failed")}
-              />
+              >
+                <source media="(max-width: 620px)" srcSet={photo.mobileSrc} />
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  width={photo.width}
+                  height={photo.height}
+                  loading="eager"
+                  fetchPriority={index === 0 ? "high" : "low"}
+                  decoding="async"
+                  onLoad={() => imageSettled(index, "ready")}
+                  onError={() => imageSettled(index, "failed")}
+                />
+              </picture>
             ),
         )}
       </div>
@@ -1547,10 +1558,10 @@ export default function Home() {
               <div className="dz-instagram-consent">
                 <img
                   data-dz-reveal="left"
-                  src={PHOTOS.team}
-                  alt="Het team van Dikke Zeehond samen aan zee"
-                  width={2048}
-                  height={1365}
+                  src={PHOTOS.hospitality}
+                  alt="Een medewerker verwelkomt je met koffie en gebak bij Dikke Zeehond"
+                  width={1200}
+                  height={1800}
                   loading="lazy"
                   decoding="async"
                 />
@@ -1590,7 +1601,7 @@ export default function Home() {
           <div className="dz-shell dz-groups-grid">
             <div className="dz-groups-image" data-dz-reveal="left">
               <img
-                src={PHOTOS.interior}
+                src={PHOTOS.groups}
                 alt="Een lange houten tafel en kleurrijke stoelen in het eigen paviljoen van Dikke Zeehond"
                 width={2048}
                 height={1365}
@@ -1823,8 +1834,8 @@ export default function Home() {
                 ) : (
                   <>
                     <img
-                      src={PHOTOS.sea}
-                      alt="Uitzicht vanaf het terras van Dikke Zeehond"
+                      src={PHOTOS.arrival}
+                      alt="De entree en het terras van Dikke Zeehond aan het strand"
                       width={2048}
                       height={1365}
                       loading="lazy"
@@ -2005,14 +2016,14 @@ export default function Home() {
         ) : (
           <div className="dz-webcam-poster">
             <img
-              src={PHOTOS.sea}
-              alt="Het terras met uitzicht op zee"
+              src={PHOTOS.webcam}
+              alt="Sfeerfoto van het terras en de zee bij Dikke Zeehond"
               width={2048}
               height={1365}
             />
             <div>
               <Play size={34} aria-hidden="true" />
-              <p>Laad de live webcam via YouTube.</p>
+              <p>Bekijk de livebeelden via YouTube. De foto is een sfeerbeeld.</p>
               <button
                 className="dz-button"
                 type="button"
@@ -2113,7 +2124,8 @@ const STYLES = `
 .dz-mobile-nav{display:none}
 .dz-hero{position:relative;isolation:isolate;min-height:650px;height:calc(100svh - 122px);max-height:900px;background:#453b2e;color:#fff}
 .dz-hero-images{position:absolute;inset:0;z-index:-2;isolation:isolate;overflow:hidden}
-.dz-hero-image{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;object-position:var(--dz-slide-position,50% 62%);opacity:0;transition:none}
+.dz-hero-image{position:absolute;inset:0;z-index:0;display:block;width:100%;height:100%;opacity:0;transition:none}
+.dz-hero-image>img{display:block;width:100%;height:100%;object-fit:cover;object-position:var(--dz-slide-position,50% 62%)}
 .dz-hero-image.is-previous{z-index:1;opacity:1}
 .dz-hero-image.is-current{z-index:2;opacity:1;transition:opacity var(--dz-slide-duration,1400ms) ease}
 .dz-hero-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(23,25,19,.68),rgba(23,25,19,.3) 49%,rgba(23,25,19,.12)),linear-gradient(0deg,rgba(20,22,18,.45),transparent 42%)}
@@ -2275,7 +2287,7 @@ const STYLES = `
 @media(min-width:1550px){.dz-hero-content{padding-block:65px 105px}}
 @media(max-width:1100px){.dz-shell{width:calc(100% - 72px)}.dz-header-inner{gap:22px}.dz-desktop-nav{gap:18px}.dz-food-grid,.dz-groups-grid{gap:60px}.dz-christmas-grid{gap:65px}.dz-intro{gap:60px}.dz-visit-grid{gap:28px}.dz-visit-grid{grid-template-columns:.9fr 1.15fr}.dz-visit-image{grid-column:1/-1;min-height:240px}.dz-visit-image>img{object-position:50% 55%}.dz-visit-image>div{background:linear-gradient(90deg,#1e261bd4,transparent 80%)}.dz-footer-top{gap:40px}.dz-footer-bottom>span:nth-child(2){max-width:420px}}
 @media(max-width:850px){.dz-shell{width:calc(100% - 48px)}.dz-header-inner{height:74px;gap:16px}.dz-desktop-nav{display:none}.dz-header-booking{margin-left:auto}.dz-menu-toggle{display:flex}.dz-brand-symbol{width:35px;height:37px}.dz-brand-word{width:90px;height:40px}.dz-mobile-nav{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:var(--dz-cream);padding:8px 24px 22px;border-bottom:1px solid var(--dz-line);box-shadow:0 15px 25px #30382d14;max-height:calc(100svh - 90px);overflow-y:auto}.dz-mobile-nav>a:not(.dz-button){display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--dz-line);font-size:14px}.dz-mobile-nav>.dz-button{margin-top:18px}.dz-mobile-nav-extra{display:flex;justify-content:center;gap:25px;margin-top:20px}.dz-mobile-nav-extra>a,.dz-mobile-nav-extra>button{border:0;background:transparent;padding:3px;font-size:11px;color:var(--dz-muted)}.dz-section{padding-block:70px}.dz-hero{height:calc(100svh - 109px);min-height:620px;max-height:780px}.dz-hero h1{font-size:clamp(4.6rem,10vw,6rem)}.dz-intro{gap:40px;padding-block:60px}.dz-intro h2{font-size:2.4rem}.dz-intro-copy>p{font-size:13px}.dz-food-grid,.dz-groups-grid{gap:38px}.dz-food-visual{min-height:540px}.dz-photo-note{right:-15px;bottom:25px;padding:17px;font-size:14px}.dz-food-copy h2,.dz-groups-copy h2{font-size:2.8rem}.dz-food-copy>p:not(.dz-eyebrow):not(.dz-small-note),.dz-groups-copy>p:not(.dz-eyebrow):not(.dz-small-note){font-size:13px}.dz-christmas-grid{gap:45px;grid-template-columns:1.15fr .85fr}.dz-christmas h2{font-size:3.9rem}.dz-christmas .dz-eyebrow{font-size:9px}.dz-christmas-menu strong{font-size:18px}.dz-price{font-size:45px}.dz-christmas-image{transform:none}.dz-gallery{gap:16px}.dz-gallery-tall{height:390px}.dz-gallery-wide{height:285px;margin-top:35px}.dz-gallery-small{height:320px;margin-top:60px}.dz-gallery-item>span{left:15px;right:15px;font-size:10px}.dz-section-heading{gap:35px}.dz-section-heading>p{max-width:250px;font-size:12px}.dz-groups-image{min-height:520px}.dz-groups-image>span{left:15px;right:15px;font-size:14px}.dz-review-invitation{align-items:flex-start;flex-direction:column;gap:20px}.dz-footer-bottom{flex-wrap:wrap}.dz-footer-bottom>span:nth-child(2){order:3;width:100%;max-width:none}}
-@media(max-width:620px){.dz-shell{width:calc(100% - 40px)}.dz-section{padding-block:55px}.dz-home h2{font-size:2.6rem}.dz-eyebrow{font-size:9px;margin-bottom:17px!important;letter-spacing:.17em}.dz-announcement{gap:8px;font-size:10px;min-height:34px}.dz-announcement-extra{display:none}.dz-header-inner{height:70px;gap:10px}.dz-brand{gap:8px}.dz-brand-symbol{width:31px;height:33px}.dz-brand-word{width:78px;height:35px}.dz-header-booking{min-height:38px;padding:9px 13px;font-size:10px;gap:7px}.dz-menu-toggle{width:36px}.dz-hero{min-height:610px;height:calc(100svh - 104px);max-height:790px}.dz-hero-image{object-position:var(--dz-slide-mobile-position,68% 50%)}.dz-hero-shade{background:linear-gradient(90deg,#161b14a6,#161b1452),linear-gradient(0deg,#161b1480,transparent 65%)}.dz-hero-content{padding-block:53px 98px;justify-content:center}.dz-hero h1{font-size:clamp(3.7rem,14.4vw,5.6rem);line-height:1.01;margin-bottom:24px}.dz-hero-copy{font-size:13px;line-height:1.85;margin-bottom:27px!important}.dz-hero .dz-actions{gap:10px;width:100%;flex-direction:column;align-items:flex-start}.dz-hero .dz-button{min-height:47px;padding:12px 18px;min-width:220px;font-size:12px}.dz-hero-bottom{bottom:24px;font-size:9px;padding-top:15px;letter-spacing:.02em}.dz-hero-bottom{gap:10px}.dz-hero-tools{gap:8px}.dz-hero-discover{gap:9px}.dz-hero-discover>span{display:none}.dz-slideshow-controls{gap:4px}.dz-slide-toggle{width:32px;height:32px}.dz-slide-dot{width:24px;height:32px}.dz-slide-dot[aria-pressed=true]>span{width:17px}.dz-intro{grid-template-columns:1fr;gap:23px;padding-block:46px}.dz-intro h2{font-size:2.25rem}.dz-intro-copy>p{font-size:13px;line-height:1.9;margin-bottom:13px}.dz-food-grid{grid-template-columns:1fr;gap:35px}.dz-food-visual{min-height:0;height:390px}.dz-food-visual>img{object-position:50% 50%}.dz-photo-note{right:-5px;bottom:23px;font-size:14px;gap:12px;padding:17px}.dz-food-copy h2{font-size:2.8rem}.dz-food-copy>p:not(.dz-eyebrow):not(.dz-small-note){font-size:13px;margin-block:20px}.dz-menu-moments{margin-block:22px 25px}.dz-menu-moments>div{padding-block:12px}.dz-food-copy>.dz-button{width:100%;font-size:12px}.dz-christmas-grid{grid-template-columns:1fr;gap:35px}.dz-christmas h2{font-size:3.9rem}.dz-christmas-copy>p:not(.dz-eyebrow):not(.dz-small-note):not(.dz-christmas-reservation){font-size:13px;margin-block:20px}.dz-christmas-menu{margin-block:23px;padding-block:19px}.dz-christmas-menu strong{font-size:20px}.dz-price{font-size:52px}.dz-christmas .dz-actions{align-items:flex-start;flex-direction:column;gap:14px}.dz-christmas .dz-button{width:100%;font-size:12px}.dz-christmas-image{width:84%;max-width:330px;justify-self:center;transform:none}.dz-christmas-image>span{font-size:10px}.dz-section-heading{display:block;margin-bottom:28px}.dz-section-heading>p{max-width:none;font-size:13px;margin-top:20px;margin-bottom:0}.dz-section-heading>.dz-text-link,.dz-section-heading>.dz-button{margin-top:23px}.dz-gallery{grid-template-columns:1fr 1fr;gap:12px}.dz-gallery-tall{grid-row:span 2;height:435px}.dz-gallery-wide{margin-top:0;height:210px}.dz-gallery-small{margin-top:0;height:213px}.dz-gallery-item>span{font-size:9px;bottom:13px;left:12px;right:12px;line-height:1.4}.dz-gallery-item>span>svg{width:15px;height:15px}.dz-instagram-link{font-size:11px;margin-top:22px}.dz-groups-grid{grid-template-columns:1fr;gap:35px}.dz-groups-image{min-height:0;height:360px}.dz-groups-image>img{object-position:45% 50%}.dz-groups-image>span{bottom:18px;padding:12px 15px;font-size:15px}.dz-groups-copy h2{font-size:2.7rem}.dz-group-options>a{padding-block:16px}.dz-group-options strong{font-size:21px}.dz-groups-copy>.dz-button{width:100%;font-size:12px}.dz-reviews h2{font-size:2.4rem}.dz-review-invitation{padding-block:22px;gap:18px}.dz-review-invitation p{font-size:13px}.dz-review-invitation .dz-button{width:100%;font-size:11px}.dz-review-invitation span{font-size:10px}.dz-visit-grid{grid-template-columns:1fr;gap:35px}.dz-visit-grid h3{font-size:25px}.dz-address{padding-bottom:28px;border-bottom:1px solid var(--dz-line)}.dz-visit .dz-section-heading>.dz-button{width:100%}.dz-address>p{font-size:13px}.dz-contact-links>a{font-size:13px}.dz-hours dl>div{font-size:12px;padding-block:12px}.dz-hours .dz-small-note{font-size:11px}.dz-hours-label{font-size:11px}.dz-holiday-hours summary{font-size:12px}.dz-holiday-hours dl>div{font-size:11px}.dz-visit-image{min-height:300px}.dz-visit-image>div{background:linear-gradient(0deg,#1e261bd4,transparent 95%)}.dz-visit-image>div>p{font-size:31px}.dz-visit-image .dz-button{font-size:11px}.dz-footer{padding:45px 0 calc(96px + env(safe-area-inset-bottom))}.dz-footer-top{grid-template-columns:1fr 1fr;gap:32px 22px;padding-bottom:30px}.dz-footer-top>div:first-child{grid-column:1/-1}.dz-footer-top>div>p{font-size:12px}.dz-footer .dz-brand-symbol{width:38px;height:40px}.dz-footer .dz-brand-word{width:96px;height:43px}.dz-footer-links{gap:15px}.dz-footer-links>a,.dz-footer-links>button{font-size:10px;line-height:1.7}.dz-footer-bottom{font-size:9px;gap:12px}.dz-mobile-bar{position:fixed;bottom:0;left:0;right:0;z-index:70;display:grid;grid-template-columns:1fr 1.3fr;gap:10px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(246,242,234,.98);border-top:1px solid var(--dz-line);box-shadow:0 -5px 22px #151b1112;backdrop-filter:blur(10px)}.dz-mobile-bar>a{display:flex;align-items:center;justify-content:center;gap:13px;font-size:12px;font-weight:600;min-height:42px}.dz-mobile-bar .dz-button{padding:10px 16px;min-height:42px}.dz-consent{left:12px;bottom:calc(77px + env(safe-area-inset-bottom));width:calc(100% - 24px);padding:19px;max-height:calc(100svh - 180px)}.dz-consent-title{font-size:19px}.dz-consent p:not(.dz-consent-title){font-size:10px}.dz-consent-actions{gap:8px;margin-top:13px}.dz-consent-actions .dz-button{font-size:10px;padding:10px 8px;min-height:41px}.dz-dialog{padding:22px;max-height:calc(100svh - 24px);width:calc(100% - 24px)}.dz-dialog-header{gap:12px}.dz-dialog-header h2{font-size:28px}.dz-dialog-header .dz-icon-button{width:36px;height:36px}.dz-form-row{grid-template-columns:1fr;gap:0}.dz-form input,.dz-form textarea{font-size:16px}.dz-form .dz-button{width:100%}.dz-webcam-frame,.dz-webcam-poster{aspect-ratio:4/3}.dz-webcam-poster>div{gap:12px;padding:15px}.dz-webcam-poster .dz-button{font-size:10px;min-height:42px;padding:10px 12px}.dz-webcam-poster p{font-size:11px}.dz-lightbox-image{max-height:68svh}.dz-home section[id],.dz-home main[id],.dz-home .dz-anchor{scroll-margin-top:90px}}
+@media(max-width:620px){.dz-shell{width:calc(100% - 40px)}.dz-section{padding-block:55px}.dz-home h2{font-size:2.6rem}.dz-eyebrow{font-size:9px;margin-bottom:17px!important;letter-spacing:.17em}.dz-announcement{gap:8px;font-size:10px;min-height:34px}.dz-announcement-extra{display:none}.dz-header-inner{height:70px;gap:10px}.dz-brand{gap:8px}.dz-brand-symbol{width:31px;height:33px}.dz-brand-word{width:78px;height:35px}.dz-header-booking{min-height:38px;padding:9px 13px;font-size:10px;gap:7px}.dz-menu-toggle{width:36px}.dz-hero{min-height:610px;height:calc(100svh - 104px);max-height:790px}.dz-hero-image>img{object-position:var(--dz-slide-mobile-position,50% 50%)}.dz-hero-shade{background:linear-gradient(90deg,#161b14a6,#161b1452),linear-gradient(0deg,#161b1480,transparent 65%)}.dz-hero-content{padding-block:53px 98px;justify-content:center}.dz-hero h1{font-size:clamp(3.7rem,14.4vw,5.6rem);line-height:1.01;margin-bottom:24px}.dz-hero-copy{font-size:13px;line-height:1.85;margin-bottom:27px!important}.dz-hero .dz-actions{gap:10px;width:100%;flex-direction:column;align-items:flex-start}.dz-hero .dz-button{min-height:47px;padding:12px 18px;min-width:220px;font-size:12px}.dz-hero-bottom{bottom:24px;font-size:9px;padding-top:15px;letter-spacing:.02em}.dz-hero-bottom{gap:10px}.dz-hero-tools{gap:8px}.dz-hero-discover{gap:9px}.dz-hero-discover>span{display:none}.dz-slideshow-controls{gap:4px}.dz-slide-toggle{width:32px;height:32px}.dz-slide-dot{width:24px;height:32px}.dz-slide-dot[aria-pressed=true]>span{width:17px}.dz-intro{grid-template-columns:1fr;gap:23px;padding-block:46px}.dz-intro h2{font-size:2.25rem}.dz-intro-copy>p{font-size:13px;line-height:1.9;margin-bottom:13px}.dz-food-grid{grid-template-columns:1fr;gap:35px}.dz-food-visual{min-height:0;height:390px}.dz-food-visual>img{object-position:50% 50%}.dz-photo-note{right:-5px;bottom:23px;font-size:14px;gap:12px;padding:17px}.dz-food-copy h2{font-size:2.8rem}.dz-food-copy>p:not(.dz-eyebrow):not(.dz-small-note){font-size:13px;margin-block:20px}.dz-menu-moments{margin-block:22px 25px}.dz-menu-moments>div{padding-block:12px}.dz-food-copy>.dz-button{width:100%;font-size:12px}.dz-christmas-grid{grid-template-columns:1fr;gap:35px}.dz-christmas h2{font-size:3.9rem}.dz-christmas-copy>p:not(.dz-eyebrow):not(.dz-small-note):not(.dz-christmas-reservation){font-size:13px;margin-block:20px}.dz-christmas-menu{margin-block:23px;padding-block:19px}.dz-christmas-menu strong{font-size:20px}.dz-price{font-size:52px}.dz-christmas .dz-actions{align-items:flex-start;flex-direction:column;gap:14px}.dz-christmas .dz-button{width:100%;font-size:12px}.dz-christmas-image{width:84%;max-width:330px;justify-self:center;transform:none}.dz-christmas-image>span{font-size:10px}.dz-section-heading{display:block;margin-bottom:28px}.dz-section-heading>p{max-width:none;font-size:13px;margin-top:20px;margin-bottom:0}.dz-section-heading>.dz-text-link,.dz-section-heading>.dz-button{margin-top:23px}.dz-gallery{grid-template-columns:1fr 1fr;gap:12px}.dz-gallery-tall{grid-row:span 2;height:435px}.dz-gallery-wide{margin-top:0;height:210px}.dz-gallery-small{margin-top:0;height:213px}.dz-gallery-item>span{font-size:9px;bottom:13px;left:12px;right:12px;line-height:1.4}.dz-gallery-item>span>svg{width:15px;height:15px}.dz-instagram-link{font-size:11px;margin-top:22px}.dz-groups-grid{grid-template-columns:1fr;gap:35px}.dz-groups-image{min-height:0;height:360px}.dz-groups-image>img{object-position:45% 50%}.dz-groups-image>span{bottom:18px;padding:12px 15px;font-size:15px}.dz-groups-copy h2{font-size:2.7rem}.dz-group-options>a{padding-block:16px}.dz-group-options strong{font-size:21px}.dz-groups-copy>.dz-button{width:100%;font-size:12px}.dz-reviews h2{font-size:2.4rem}.dz-review-invitation{padding-block:22px;gap:18px}.dz-review-invitation p{font-size:13px}.dz-review-invitation .dz-button{width:100%;font-size:11px}.dz-review-invitation span{font-size:10px}.dz-visit-grid{grid-template-columns:1fr;gap:35px}.dz-visit-grid h3{font-size:25px}.dz-address{padding-bottom:28px;border-bottom:1px solid var(--dz-line)}.dz-visit .dz-section-heading>.dz-button{width:100%}.dz-address>p{font-size:13px}.dz-contact-links>a{font-size:13px}.dz-hours dl>div{font-size:12px;padding-block:12px}.dz-hours .dz-small-note{font-size:11px}.dz-hours-label{font-size:11px}.dz-holiday-hours summary{font-size:12px}.dz-holiday-hours dl>div{font-size:11px}.dz-visit-image{min-height:300px}.dz-visit-image>div{background:linear-gradient(0deg,#1e261bd4,transparent 95%)}.dz-visit-image>div>p{font-size:31px}.dz-visit-image .dz-button{font-size:11px}.dz-footer{padding:45px 0 calc(96px + env(safe-area-inset-bottom))}.dz-footer-top{grid-template-columns:1fr 1fr;gap:32px 22px;padding-bottom:30px}.dz-footer-top>div:first-child{grid-column:1/-1}.dz-footer-top>div>p{font-size:12px}.dz-footer .dz-brand-symbol{width:38px;height:40px}.dz-footer .dz-brand-word{width:96px;height:43px}.dz-footer-links{gap:15px}.dz-footer-links>a,.dz-footer-links>button{font-size:10px;line-height:1.7}.dz-footer-bottom{font-size:9px;gap:12px}.dz-mobile-bar{position:fixed;bottom:0;left:0;right:0;z-index:70;display:grid;grid-template-columns:1fr 1.3fr;gap:10px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(246,242,234,.98);border-top:1px solid var(--dz-line);box-shadow:0 -5px 22px #151b1112;backdrop-filter:blur(10px)}.dz-mobile-bar>a{display:flex;align-items:center;justify-content:center;gap:13px;font-size:12px;font-weight:600;min-height:42px}.dz-mobile-bar .dz-button{padding:10px 16px;min-height:42px}.dz-consent{left:12px;bottom:calc(77px + env(safe-area-inset-bottom));width:calc(100% - 24px);padding:19px;max-height:calc(100svh - 180px)}.dz-consent-title{font-size:19px}.dz-consent p:not(.dz-consent-title){font-size:10px}.dz-consent-actions{gap:8px;margin-top:13px}.dz-consent-actions .dz-button{font-size:10px;padding:10px 8px;min-height:41px}.dz-dialog{padding:22px;max-height:calc(100svh - 24px);width:calc(100% - 24px)}.dz-dialog-header{gap:12px}.dz-dialog-header h2{font-size:28px}.dz-dialog-header .dz-icon-button{width:36px;height:36px}.dz-form-row{grid-template-columns:1fr;gap:0}.dz-form input,.dz-form textarea{font-size:16px}.dz-form .dz-button{width:100%}.dz-webcam-frame,.dz-webcam-poster{aspect-ratio:4/3}.dz-webcam-poster>div{gap:12px;padding:15px}.dz-webcam-poster .dz-button{font-size:10px;min-height:42px;padding:10px 12px}.dz-webcam-poster p{font-size:11px}.dz-lightbox-image{max-height:68svh}.dz-home section[id],.dz-home main[id],.dz-home .dz-anchor{scroll-margin-top:90px}}
 @media(max-width:360px){.dz-hero-tagline{max-width:105px;line-height:1.8}.dz-shell{width:calc(100% - 32px)}.dz-header-booking{padding:9px 10px;gap:5px}.dz-brand-word{width:68px}.dz-brand-symbol{width:28px}.dz-hero h1{font-size:3.6rem}.dz-hero-copy{font-size:12px}.dz-food-visual{height:340px}.dz-gallery{gap:9px}.dz-gallery-tall{height:379px}.dz-gallery-wide{height:185px}.dz-gallery-small{height:185px}.dz-gallery-item>span{left:9px;right:9px;font-size:8px}.dz-consent-actions .dz-button{font-size:9px}.dz-dialog{padding:18px}.dz-christmas h2{font-size:3.6rem}}
 /* Strandwebcam: direct vindbaar, zonder een extra video op de homepage te laden. */
 .dz-home .dz-nav-webcam{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:10px 0;border:0;background:transparent;color:var(--dz-ink);font-size:11px;font-weight:600;line-height:1.4;white-space:nowrap}
@@ -2294,14 +2306,14 @@ const STYLES = `
 .dz-instagram .dz-section-heading>.dz-text-link{flex-shrink:0;margin-bottom:4px}
 .dz-instagram-feed{min-width:0;min-height:280px}
 .dz-instagram-consent{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);background:var(--dz-cream);border:1px solid var(--dz-line);border-radius:5px;overflow:hidden}
-.dz-instagram-consent>img{display:block;width:100%;height:100%;min-height:300px;object-fit:cover;object-position:50% 65%}
+.dz-instagram-consent>img{display:block;width:100%;height:100%;max-height:520px;min-height:300px;object-fit:cover;object-position:50% 30%}
 .dz-instagram-consent-copy{padding:clamp(24px,3vw,42px);align-self:center;min-width:0}
 .dz-instagram-consent-copy>h3{font-size:clamp(25px,2.4vw,32px);line-height:1.2;margin-bottom:15px}
 .dz-instagram-consent-copy>p:not(.dz-small-note){max-width:440px;font-size:13px;line-height:1.9;color:var(--dz-muted);margin-bottom:22px}
 .dz-instagram-consent-copy>.dz-button{max-width:100%;white-space:normal}
 .dz-instagram-consent-copy>.dz-small-note{max-width:440px;font-size:10px;line-height:1.8}
 @media(max-width:850px){.dz-instagram-consent{grid-template-columns:1fr 1.1fr}.dz-instagram-consent-copy{padding:25px}.dz-instagram-consent-copy>.dz-button{font-size:11px;padding:12px 15px;gap:9px}}
-@media(max-width:620px){.dz-instagram .dz-section-heading>.dz-text-link{margin-top:20px}.dz-instagram-consent{grid-template-columns:minmax(0,1fr)}.dz-instagram-consent>img{height:auto;min-height:0;aspect-ratio:3/2;object-fit:contain}.dz-instagram-consent-copy{padding:25px 22px}.dz-instagram-consent-copy>h3{font-size:26px}.dz-instagram-consent-copy>.dz-button{width:100%;font-size:12px}.dz-instagram-consent-copy>.dz-small-note{font-size:10px}.dz-instagram-feed{min-height:220px}}
+@media(max-width:620px){.dz-instagram .dz-section-heading>.dz-text-link{margin-top:20px}.dz-instagram-consent{grid-template-columns:minmax(0,1fr)}.dz-instagram-consent>img{height:auto;min-height:0;max-height:460px;aspect-ratio:4/5;object-fit:cover;object-position:50% 25%}.dz-instagram-consent-copy{padding:25px 22px}.dz-instagram-consent-copy>h3{font-size:26px}.dz-instagram-consent-copy>.dz-button{width:100%;font-size:12px}.dz-instagram-consent-copy>.dz-small-note{font-size:10px}.dz-instagram-feed{min-height:220px}}
 
 /* Werken bij: zichtbaar in de navigatie en direct na de slideshow.
    Dit blok is direct leesbaar; bestaande animaties blijven ongewijzigd. */
