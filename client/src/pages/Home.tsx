@@ -68,7 +68,8 @@ const PHOTOS = {
   food: "/photos/autumn-2026/shared-table.webp",
   team: "/photos/autumn-2026/team-beach.webp",
   table: "/photos/autumn-2026/window-table.webp",
-  bar: "/photos/autumn-2026/warm-bar.webp",
+  bar: "/photos/autumn-2026/bar-panorama.webp",
+  window: "/photos/autumn-2026/window-seating.webp",
   drinks: "/photos/autumn-2026/hot-chocolate.webp",
   hospitality: "/photos/autumn-2026/welcome-service.webp",
   groups: "/photos/autumn-2026/group-table.webp",
@@ -142,9 +143,9 @@ const GALLERY = [
     height: 2048,
   },
   {
-    src: PHOTOS.bar,
-    alt: "De lange bar met rotan lampen en warme kleuren bij Dikke Zeehond",
-    label: "Schuif gezellig aan",
+    src: PHOTOS.window,
+    alt: "Een lichte zithoek met planten en uitzicht door de ramen bij Dikke Zeehond",
+    label: "Een plek aan het raam",
     className: "dz-gallery-wide",
     width: 2048,
     height: 1365,
@@ -1239,42 +1240,6 @@ export default function Home() {
         <HeroSlideshow onOpenWebcam={() => setPanel("webcam")} />
 
         <section
-          className="dz-careers-callout"
-          aria-labelledby="dz-careers-title"
-        >
-          <div className="dz-shell dz-careers-grid">
-            <img
-              className="dz-careers-photo"
-              src={PHOTOS.team}
-              alt="Het team van Dikke Zeehond samen aan zee"
-              width={2048}
-              height={1365}
-              loading="lazy"
-              decoding="async"
-            />
-            <div className="dz-careers-copy">
-              <p className="dz-eyebrow dz-eyebrow-light">
-                Werken bij Dikke Zeehond
-              </p>
-              <h2 id="dz-careers-title">
-                Jouw volgende stap? <em>Aan zee.</em>
-              </h2>
-            </div>
-            <p className="dz-careers-summary">
-              Een bijbaan naast je studie, een tussenjaar aan zee of als
-              Texelaar toe aan iets nieuws? Vertel ons wat jij zoekt.
-            </p>
-            <div className="dz-careers-action">
-              <a className="dz-button dz-careers-button" href={SITE.jobs}>
-                Kom bij ons werken
-                <ArrowUpRight size={17} aria-hidden="true" />
-              </a>
-              <p>Geen cv of motivatiebrief nodig.</p>
-            </div>
-          </div>
-        </section>
-
-        <section
           id="welkom"
           className="dz-intro dz-shell"
           aria-labelledby="dz-intro-title"
@@ -1514,6 +1479,20 @@ export default function Home() {
           </div>
         </section>
 
+        <section id="nog-even-blijven" className="dz-pause" aria-labelledby="dz-pause-title">
+          <img
+            src={PHOTOS.bar}
+            alt="De warme bar van Dikke Zeehond, met rotan lampen en een rij uitnodigende barkrukken"
+            width={2400}
+            height={1600}
+            loading="lazy"
+            decoding="async"
+          />
+          <div className="dz-pause-copy">
+            <h2 id="dz-pause-title">Nog even <em>blijven.</em></h2>
+          </div>
+        </section>
+
         {/* De bestaande Instagram-koppeling terug in de homepage.
             Laad de widget pas na toestemming en in de buurt van de viewport. */}
         <section
@@ -1714,6 +1693,42 @@ export default function Home() {
                 </button>
               </div>
             )}
+          </div>
+        </section>
+
+        <section
+          className="dz-careers-callout"
+          aria-labelledby="dz-careers-title"
+        >
+          <div className="dz-shell dz-careers-grid">
+            <img
+              className="dz-careers-photo"
+              src={PHOTOS.team}
+              alt="Het team van Dikke Zeehond samen aan zee"
+              width={2048}
+              height={1365}
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="dz-careers-copy">
+              <p className="dz-eyebrow dz-eyebrow-light">
+                Werken bij Dikke Zeehond
+              </p>
+              <h2 id="dz-careers-title">
+                Jouw volgende stap? <em>Aan zee.</em>
+              </h2>
+            </div>
+            <p className="dz-careers-summary">
+              Een bijbaan naast je studie, een tussenjaar aan zee of als
+              Texelaar toe aan iets nieuws? Vertel ons wat jij zoekt.
+            </p>
+            <div className="dz-careers-action">
+              <a className="dz-button dz-careers-button" href={SITE.jobs}>
+                Kom bij ons werken
+                <ArrowUpRight size={17} aria-hidden="true" />
+              </a>
+              <p>Geen cv of motivatiebrief nodig.</p>
+            </div>
           </div>
         </section>
 
@@ -2183,6 +2198,15 @@ const STYLES = `
 .dz-christmas-image>span{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:10px 0;border-bottom:1px solid #ffffff40;color:var(--dz-cream);font-size:11px;font-weight:600;line-height:1.5}
 .dz-section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:60px;margin-bottom:43px}
 .dz-section-heading>p{max-width:310px;margin-bottom:6px;font-size:13px;line-height:1.9;color:var(--dz-muted)}
+/* Een rustig fotomoment tussen de sfeergalerij en de verhalen van het team. */
+.dz-pause{position:relative;isolation:isolate;margin:0 auto;width:calc(100% - 80px);max-width:1600px;height:clamp(420px,44vw,660px);overflow:hidden;border-radius:5px;background:var(--dz-olive)}
+.dz-pause>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 55%;z-index:-2}
+.dz-pause::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,rgba(20,27,21,.7),rgba(20,27,21,.12) 60%,transparent)}
+.dz-pause-copy{display:flex;align-items:flex-end;height:100%;padding:clamp(28px,5vw,76px)}
+.dz-home .dz-pause h2{margin:0;color:var(--dz-cream);font-size:clamp(3rem,6.6vw,6.5rem);line-height:1.05;letter-spacing:-.045em;text-wrap:balance}
+.dz-pause h2 em{color:#f2dfbf}
+@media(max-width:620px){.dz-pause{width:calc(100% - 32px);height:480px;border-radius:4px}.dz-pause>img{object-position:58% 50%}.dz-pause-copy{padding:30px 25px}.dz-home .dz-pause h2{font-size:3.35rem;max-width:260px}}
+
 .dz-gallery{display:grid;grid-template-columns:1.05fr 1fr .75fr;gap:25px;align-items:start}
 .dz-gallery-item{position:relative;display:block;width:100%;padding:0;border:0;background:#e1d9cb;border-radius:4px;overflow:hidden;text-align:left;isolation:isolate}
 .dz-gallery-item::after{content:"";position:absolute;inset:50% 0 0;background:linear-gradient(transparent,rgba(21,27,18,.6));pointer-events:none}
@@ -2315,7 +2339,7 @@ const STYLES = `
 @media(max-width:850px){.dz-instagram-consent{grid-template-columns:1fr 1.1fr}.dz-instagram-consent-copy{padding:25px}.dz-instagram-consent-copy>.dz-button{font-size:11px;padding:12px 15px;gap:9px}}
 @media(max-width:620px){.dz-instagram .dz-section-heading>.dz-text-link{margin-top:20px}.dz-instagram-consent{grid-template-columns:minmax(0,1fr)}.dz-instagram-consent>img{height:auto;min-height:0;max-height:460px;aspect-ratio:4/5;object-fit:cover;object-position:50% 25%}.dz-instagram-consent-copy{padding:25px 22px}.dz-instagram-consent-copy>h3{font-size:26px}.dz-instagram-consent-copy>.dz-button{width:100%;font-size:12px}.dz-instagram-consent-copy>.dz-small-note{font-size:10px}.dz-instagram-feed{min-height:220px}}
 
-/* Werken bij: zichtbaar in de navigatie en direct na de slideshow.
+/* Werken bij: zichtbaar in de navigatie en na de gastenervaringen.
    Dit blok is direct leesbaar; bestaande animaties blijven ongewijzigd. */
 .dz-home .dz-desktop-nav .dz-nav-jobs{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:10px 13px;border:1px solid #cfc3ac;border-radius:4px;background:#e9dfcc;color:var(--dz-olive);font-size:11px;font-weight:700;line-height:1.4;white-space:nowrap}
 .dz-home .dz-desktop-nav .dz-nav-jobs::after{display:none}
